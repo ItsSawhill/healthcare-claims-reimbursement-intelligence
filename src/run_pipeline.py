@@ -8,7 +8,7 @@ from ingest import load_or_create_claims
 from preprocess import clean_claims
 from provider_kpis import build_provider_kpis
 from reimbursement import reimbursement_benchmarking
-from reporting import save_core_plots, write_executive_summary
+from reporting import save_core_plots, write_excel_workbook, write_executive_summary
 from utilization import high_utilization_segments, utilization_summary
 
 
@@ -74,12 +74,22 @@ def main() -> None:
         cost_drivers,
         REPORT_DIR / "executive_summary.md",
     )
+    write_excel_workbook(
+        monthly,
+        provider,
+        reimbursement,
+        utilization,
+        anomalies,
+        forecast,
+        REPORT_DIR / "executive_workbook.xlsx",
+    )
 
     print("Healthcare claims reimbursement intelligence pipeline completed.")
     print(f"Rows processed: {len(claims):,}")
     print(f"Tables written: {TABLE_DIR}")
     print(f"Figures written: {FIGURE_DIR}")
     print(f"Executive report: {REPORT_DIR / 'executive_summary.md'}")
+    print(f"Excel workbook: {REPORT_DIR / 'executive_workbook.xlsx'}")
 
 
 if __name__ == "__main__":

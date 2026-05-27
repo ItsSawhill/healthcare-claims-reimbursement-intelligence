@@ -214,3 +214,50 @@ def write_executive_summary(
 6. Refresh this pipeline monthly and publish the CSV outputs to the executive dashboard layer.
 """
     report_path.write_text(text)
+
+
+def write_excel_workbook(
+    monthly: pd.DataFrame,
+    provider_kpis: pd.DataFrame,
+    reimbursement: pd.DataFrame,
+    utilization: pd.DataFrame,
+    anomalies: pd.DataFrame,
+    forecast: pd.DataFrame,
+    workbook_path: Path,
+) -> None:
+    workbook_path.parent.mkdir(parents=True, exist_ok=True)
+    latest = monthly.sort_values("service_month").iloc[-1]
+    next_paid = forecast[forecast["metric"] == "total_paid"].sort_values("forecast_month").iloc[0]
+    next_pmpm = forecast[forecast["metric"] == "pmpm"].sort_values("forecast_month").iloc[0]
+    highest_risk = provider_kpis.sort_values("provider_risk_score", ascending=False).iloc[0]
+
+    executive = pd.DataFrame(
+        [
+            {"Metric": "Latest service month", "Value": latest.service_month.strftime("%Y-%m")},
+            {"Metric": "Total paid amount", "Value": latest.total_paid},
+            {"Metric": "PMPM", "Value": latest.pmpm},
+            {"Metric": "Denial rate", "Value": latest.denial_rate},
+            {"Metric": "Total claims", "Value": latest.total_claims},
+            {"Metric": "Next-month paid forecast", "Value": next_paid.forecast_value},
+            {"Metric": "Next-month PMPM forecast", "Value": next_pmpm.forecast_value},
+            {"Metric": "Highest-risk provider", "Value": f"{highest_risk.provider_name} ({highest_risk.provider_id})"},
+            {"Metric": "Highest provider risk score", "Value": highest_risk.provider_risk_score},
+        ]
+    )
+
+    with pd.ExcelWriter(workbook_path, engine="openpyxl") as writer:
+        executive.to_excel(writer, sheet_name="Executive Summary", index=False)
+        provider_kpis.to_excel(writer, sheet_name="Provider KPIs", index=False)
+        monthly.to_excel(writer, sheet_name="Monthly Trends", index=False)
+        reimbursement.to_excel(writer, sheet_name="Reimbursement Benchmarking", index=False)
+        utilization.to_excel(writer, sheet_name="Utilization Summary", index=False)
+        anomalies.to_excel(writer, sheet_name="Anomalies", index=False)
+        forecast.to_excel(writer, sheet_name="Forecasts", index=False)
+
+        for sheet in writer.book.worksheets:
+            sheet.freeze_panes = "A2"
+            for cell in sheet[1]:
+                cell.style = "Headline 3"
+            for column_cells in sheet.columns:
+                max_length = max(len(str(cell.value)) if cell.value is not None else 0 for cell in column_cells)
+                sheet.column_dimensions[column_cells[0].column_letter].width = min(max(max_length + 2, 12), 36)
