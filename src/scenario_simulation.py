@@ -60,8 +60,14 @@ def _service_rollup(frame: pd.DataFrame, simulated_paid_col: str, scenario_name:
 
 def _claim_frame(claims: pd.DataFrame) -> pd.DataFrame:
     frame = claims.copy()
+    if "cms_avg_medicare_allowed" in frame.columns:
+        cms_allowed = pd.to_numeric(frame["cms_avg_medicare_allowed"], errors="coerce")
+        simulated_benchmark = pd.to_numeric(frame["medicare_benchmark_amount"], errors="coerce")
+        frame["scenario_benchmark_amount"] = cms_allowed.fillna(simulated_benchmark)
+    else:
+        frame["scenario_benchmark_amount"] = frame["medicare_benchmark_amount"]
     frame["baseline_paid_amount"] = frame["paid_amount"]
-    frame["baseline_benchmark_variance"] = frame["allowed_amount"] - frame["medicare_benchmark_amount"]
+    frame["baseline_benchmark_variance"] = frame["allowed_amount"] - frame["scenario_benchmark_amount"]
     return frame
 
 
@@ -78,7 +84,7 @@ def simulate_reimbursement_rate_change(claims: pd.DataFrame, rate_change: float 
         frame["allowed_amount"],
         (frame["allowed_amount"] * (1 + rate_change)).clip(lower=0),
     )
-    frame["simulated_benchmark_variance"] = frame["simulated_allowed_amount"] - frame["medicare_benchmark_amount"]
+    frame["simulated_benchmark_variance"] = frame["simulated_allowed_amount"] - frame["scenario_benchmark_amount"]
     provider = _provider_rollup(frame, "simulated_paid_amount", scenario_name)
     service = _service_rollup(frame, "simulated_paid_amount", scenario_name)
     provider["scenario_type"] = "rate_change"
@@ -91,7 +97,7 @@ def simulate_utilization_change(claims: pd.DataFrame, utilization_change: float 
     frame = _claim_frame(claims)
     frame["simulated_paid_amount"] = frame["paid_amount"] * (1 + utilization_change)
     frame["simulated_allowed_amount"] = frame["allowed_amount"] * (1 + utilization_change)
-    frame["simulated_benchmark_variance"] = frame["simulated_allowed_amount"] - frame["medicare_benchmark_amount"]
+    frame["simulated_benchmark_variance"] = frame["simulated_allowed_amount"] - frame["scenario_benchmark_amount"]
     provider = _provider_rollup(frame, "simulated_paid_amount", scenario_name)
     service = _service_rollup(frame, "simulated_paid_amount", scenario_name)
     provider["scenario_type"] = "utilization_change"
@@ -118,7 +124,7 @@ def simulate_provider_contract_change(
     frame.loc[affected & frame["denial_flag"].eq(0), "simulated_allowed_amount"] = (
         frame.loc[affected & frame["denial_flag"].eq(0), "allowed_amount"] * (1 + contract_change)
     ).clip(lower=0)
-    frame["simulated_benchmark_variance"] = frame["simulated_allowed_amount"] - frame["medicare_benchmark_amount"]
+    frame["simulated_benchmark_variance"] = frame["simulated_allowed_amount"] - frame["scenario_benchmark_amount"]
     provider = _provider_rollup(frame, "simulated_paid_amount", scenario_name)
     provider["affected_provider_flag"] = provider["provider_id"].isin(provider_ids).astype(int)
     service = _service_rollup(frame, "simulated_paid_amount", scenario_name)
@@ -130,7 +136,7 @@ def simulate_provider_contract_change(
 def simulate_benchmark_alignment(claims: pd.DataFrame, alignment_rate: float = 1.0) -> tuple[pd.DataFrame, pd.DataFrame]:
     scenario_name = f"Benchmark alignment {alignment_rate:.0%}"
     frame = _claim_frame(claims)
-    target_allowed = frame["medicare_benchmark_amount"] * alignment_rate
+    target_allowed = frame["scenario_benchmark_amount"] * alignment_rate
     paid_ratio = frame["paid_amount"] / frame["allowed_amount"].replace(0, pd.NA)
     frame["simulated_allowed_amount"] = np.where(frame["denial_flag"].eq(1), frame["allowed_amount"], target_allowed)
     frame["simulated_paid_amount"] = np.where(
@@ -138,7 +144,7 @@ def simulate_benchmark_alignment(claims: pd.DataFrame, alignment_rate: float = 1
         0,
         (frame["simulated_allowed_amount"] * paid_ratio.fillna(0)).clip(lower=0),
     )
-    frame["simulated_benchmark_variance"] = frame["simulated_allowed_amount"] - frame["medicare_benchmark_amount"]
+    frame["simulated_benchmark_variance"] = frame["simulated_allowed_amount"] - frame["scenario_benchmark_amount"]
     provider = _provider_rollup(frame, "simulated_paid_amount", scenario_name)
     service = _service_rollup(frame, "simulated_paid_amount", scenario_name)
     provider["scenario_type"] = "benchmark_alignment"

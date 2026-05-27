@@ -4,6 +4,11 @@ from advanced_analytics import cost_driver_analysis, segment_providers
 from anomaly_detection import detect_anomalies
 from claims_analytics import claims_summary, monthly_trends
 from cms_benchmark_loader import apply_cms_or_fallback_benchmarks
+from cms_provider_data_loader import (
+    create_cms_provider_service_benchmarks,
+    enrich_claims_with_cms_provider_benchmarks,
+    load_cms_provider_service_data,
+)
 from forecasting import forecast_monthly_metrics, save_forecast_plots
 from ingest import load_or_create_claims
 from preprocess import clean_claims
@@ -40,6 +45,9 @@ def main() -> None:
     raw_claims = load_or_create_claims(BASE_DIR / "data" / "raw" / "claims.csv", n_rows=20000)
     claims = clean_claims(raw_claims)
     claims, benchmark_source = apply_cms_or_fallback_benchmarks(claims, BASE_DIR / "data" / "raw" / "cms_benchmarks.csv")
+    cms_provider_service = load_cms_provider_service_data(BASE_DIR / "data" / "raw" / "cms_provider_service.csv")
+    cms_provider_benchmarks = create_cms_provider_service_benchmarks(cms_provider_service)
+    claims, cms_provider_source = enrich_claims_with_cms_provider_benchmarks(claims, cms_provider_benchmarks)
     claims.to_csv(PROCESSED_DIR / "claims_clean.csv", index=False)
 
     monthly = monthly_trends(claims)
@@ -65,6 +73,7 @@ def main() -> None:
     write_table(high_util, "high_utilization_segments.csv")
     write_table(anomalies, "anomalies.csv")
     write_table(forecast, "forecast_summary.csv")
+    write_table(cms_provider_benchmarks, "cms_provider_service_benchmarks.csv")
     write_table(rate_provider, "scenario_rate_change.csv")
     write_table(util_provider, "scenario_utilization_change.csv")
     write_table(contract_provider, "scenario_provider_contract_change.csv")
@@ -118,6 +127,7 @@ def main() -> None:
     print(f"Executive report: {REPORT_DIR / 'executive_summary.md'}")
     print(f"Excel workbook: {REPORT_DIR / 'executive_workbook.xlsx'}")
     print(f"Benchmark source: {benchmark_source}")
+    print(f"CMS provider/service source: {cms_provider_source}")
 
 
 if __name__ == "__main__":

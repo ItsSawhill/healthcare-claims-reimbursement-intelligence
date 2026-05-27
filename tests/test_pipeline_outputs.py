@@ -4,6 +4,7 @@ import sys
 
 import numpy as np
 import pandas as pd
+import pytest
 from openpyxl import load_workbook
 
 
@@ -14,6 +15,13 @@ REPORT_DIR = ROOT / "outputs" / "reports"
 FIGURE_DIR = ROOT / "outputs" / "figures"
 
 from cms_benchmark_loader import apply_cms_or_fallback_benchmarks
+from cms_provider_data_loader import (
+    CMS_PROVIDER_SOURCE,
+    SIMULATED_SOURCE,
+    create_cms_provider_service_benchmarks,
+    enrich_claims_with_cms_provider_benchmarks,
+    load_cms_provider_service_data,
+)
 
 
 def test_required_output_files_exist():
@@ -30,6 +38,7 @@ def test_required_output_files_exist():
         TABLE_DIR / "scenario_provider_contract_change.csv",
         TABLE_DIR / "scenario_benchmark_alignment.csv",
         TABLE_DIR / "scenario_summary.csv",
+        TABLE_DIR / "cms_provider_service_benchmarks.csv",
         REPORT_DIR / "executive_summary.md",
         REPORT_DIR / "executive_workbook.xlsx",
         FIGURE_DIR / "pmpm_trend.png",
@@ -161,9 +170,91 @@ def test_cms_benchmark_loader_fallback_uses_synthetic_source(tmp_path):
         }
     )
     enriched, source = apply_cms_or_fallback_benchmarks(claims, tmp_path / "missing_cms.csv")
-    assert source == "synthetic_medicare_style"
-    assert set(enriched["benchmark_source"]) == {"synthetic_medicare_style"}
+    assert source == "simulated"
+    assert set(enriched["benchmark_source"]) == {"simulated"}
     assert enriched["medicare_benchmark_amount"].tolist() == [100.0, 25.0]
+
+
+def test_cms_provider_loader_missing_file_does_not_fail(tmp_path):
+    loaded = load_cms_provider_service_data(tmp_path / "missing_provider_service.csv")
+    assert loaded is None
+
+
+def test_cms_provider_loader_validates_required_columns(tmp_path):
+    bad_path = tmp_path / "bad_cms_provider_service.csv"
+    pd.DataFrame({"HCPCS_Cd": ["99213"], "Tot_Srvcs": [10]}).to_csv(bad_path, index=False)
+    with pytest.raises(ValueError, match="missing required columns"):
+        load_cms_provider_service_data(bad_path)
+
+
+def test_cms_provider_loader_sample_file_creates_benchmark_output(tmp_path):
+    cms_path = tmp_path / "cms_provider_service.csv"
+    pd.DataFrame(
+        {
+            "Rndrng_NPI": ["1234567890", "1234567890", "2222222222"],
+            "Rndrng_Prvdr_Last_Org_Name": ["Alpha Clinic", "Alpha Clinic", "Beta Group"],
+            "Rndrng_Prvdr_State_Abrvtn": ["MD", "MD", "VA"],
+            "HCPCS_Cd": ["99213", "99213", "93000"],
+            "HCPCS_Desc": ["Office visit", "Office visit", "Electrocardiogram"],
+            "Tot_Srvcs": [10, 20, 5],
+            "Avg_Sbmtd_Chrg": [150.0, 180.0, 75.0],
+            "Avg_Mdcr_Alowd_Amt": [90.0, 100.0, 25.0],
+            "Avg_Mdcr_Pymt_Amt": [70.0, 80.0, 20.0],
+        }
+    ).to_csv(cms_path, index=False)
+
+    loaded = load_cms_provider_service_data(cms_path)
+    benchmarks = create_cms_provider_service_benchmarks(loaded)
+    output_path = tmp_path / "cms_provider_service_benchmarks.csv"
+    benchmarks.to_csv(output_path, index=False)
+
+    assert output_path.exists()
+    assert {"procedure_code", "provider_state", "benchmark_level", "avg_medicare_allowed"}.issubset(benchmarks.columns)
+    procedure_row = benchmarks[(benchmarks["benchmark_level"] == "procedure_code") & (benchmarks["procedure_code"] == "99213")].iloc[0]
+    assert round(procedure_row["avg_medicare_allowed"], 2) == 96.67
+
+
+def test_synthetic_claims_can_join_to_sample_cms_benchmarks(tmp_path):
+    cms = pd.DataFrame(
+        {
+            "provider_npi": ["123"],
+            "provider_name": ["Alpha Clinic"],
+            "provider_state": ["MD"],
+            "procedure_code": ["99213"],
+            "service_description": ["Office visit"],
+            "number_of_services": [10],
+            "submitted_charge_amount": [150.0],
+            "medicare_allowed_amount": [90.0],
+            "medicare_payment_amount": [70.0],
+            "avg_submitted_charge": [150.0],
+            "avg_medicare_allowed": [90.0],
+            "avg_medicare_payment": [70.0],
+            "medicare_payment_to_charge_ratio": [70.0 / 150.0],
+            "allowed_to_charge_ratio": [90.0 / 150.0],
+        }
+    )
+    benchmarks = create_cms_provider_service_benchmarks(cms)
+    claims = pd.DataFrame(
+        {
+            "procedure_code": ["99213", "93000"],
+            "allowed_amount": [110.0, 30.0],
+            "paid_amount": [85.0, 20.0],
+            "medicare_benchmark_amount": [100.0, 25.0],
+            "benchmark_source": [SIMULATED_SOURCE, SIMULATED_SOURCE],
+        }
+    )
+    enriched, source = enrich_claims_with_cms_provider_benchmarks(claims, benchmarks)
+    assert source == CMS_PROVIDER_SOURCE
+    assert enriched.loc[0, "cms_allowed_variance"] == 20.0
+    assert enriched.loc[0, "cms_payment_variance"] == 15.0
+    assert enriched.loc[0, "benchmark_source"] == CMS_PROVIDER_SOURCE
+    assert enriched.loc[1, "benchmark_source"] == SIMULATED_SOURCE
+
+
+def test_processed_claims_benchmark_source_is_populated():
+    claims = pd.read_csv(ROOT / "data" / "processed" / "claims_clean.csv")
+    assert "benchmark_source" in claims.columns
+    assert claims["benchmark_source"].notna().all()
 
 
 def test_pipeline_runs_end_to_end():

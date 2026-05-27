@@ -2,14 +2,16 @@
 
 ## Overview
 
-This project is organized as a repeatable healthcare claims analytics pipeline. The workflow starts with raw or synthetic claim-level data and ends with dashboard-ready tables, presentation-quality figures, SQL analytics patterns, and an executive report.
+This project is organized as a repeatable healthcare claims analytics pipeline. The workflow starts with synthetic claim-level data, optionally enriches it with real CMS public provider/service benchmark data, and ends with dashboard-ready tables, presentation-quality figures, SQL analytics patterns, and an executive report.
 
 ```text
 data/raw/claims.csv
+data/raw/cms_provider_service.csv (optional public CMS benchmark file)
         |
         v
 Ingestion Layer
 src/ingest.py
+src/cms_provider_data_loader.py
         |
         v
 Preprocessing Layer
@@ -78,6 +80,7 @@ The analytics layer produces reusable, dashboard-ready views:
 - `advanced_analytics.py`: provider risk scoring, weighted efficiency scoring, reimbursement deviation severity, clustering, and cost driver analysis
 - `scenario_simulation.py`: reimbursement rate, utilization, provider contract, and benchmark alignment impact modeling
 - `cms_benchmark_loader.py`: optional local CMS benchmark file validation with synthetic benchmark fallback
+- `cms_provider_data_loader.py`: optional CMS Medicare Physician & Other Practitioners public provider/service benchmark processing
 
 ## Forecasting Layer
 
@@ -140,5 +143,6 @@ Core outputs include:
 - `scenario_utilization_change.csv`
 - `scenario_provider_contract_change.csv`
 - `scenario_benchmark_alignment.csv`
+- `cms_provider_service_benchmarks.csv`
 
 These tables are intentionally denormalized and readable so analysts and hiring managers can inspect the business logic without needing a database.

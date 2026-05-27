@@ -14,3 +14,7 @@ venv/
 .pytest_cache/
 .mypy_cache/
 .ruff_cache/
+data/raw/*.csv
+data/raw/*.zip
+data/raw/*.parquet
+!data/raw/README.md

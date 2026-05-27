@@ -44,8 +44,8 @@ def apply_cms_or_fallback_benchmarks(claims: pd.DataFrame, cms_path: Path | str 
     enriched = claims.copy()
 
     if cms_benchmarks is None or cms_benchmarks.empty:
-        enriched["benchmark_source"] = "synthetic_medicare_style"
-        return enriched, "synthetic_medicare_style"
+        enriched["benchmark_source"] = "simulated"
+        return enriched, "simulated"
 
     latest_year = cms_benchmarks["year"].max()
     latest = cms_benchmarks[cms_benchmarks["year"] == latest_year]
@@ -59,8 +59,8 @@ def apply_cms_or_fallback_benchmarks(claims: pd.DataFrame, cms_path: Path | str 
     if matched.any():
         enriched.loc[matched, "medicare_benchmark_amount"] = enriched.loc[matched, "cms_benchmark_amount"]
         enriched.loc[matched, "benchmark_source"] = "local_cms_file"
-        enriched.loc[~matched, "benchmark_source"] = "synthetic_medicare_style"
+        enriched.loc[~matched, "benchmark_source"] = "simulated"
     else:
-        enriched["benchmark_source"] = "synthetic_medicare_style"
+        enriched["benchmark_source"] = "simulated"
     enriched = enriched.drop(columns=["cms_benchmark_amount", "cms_benchmark_year"], errors="ignore")
     return enriched, "local_cms_file"
