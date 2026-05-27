@@ -1,4 +1,4 @@
-# Healthcare Claims & Reimbursement Intelligence Platform
+# Enterprise Healthcare Reimbursement Analytics Platform
 
 ![Python](https://img.shields.io/badge/Python-3.10%2B-blue)
 ![Analytics](https://img.shields.io/badge/Analytics-Healthcare%20Claims-2f6f8f)
@@ -6,144 +6,186 @@
 ![Status](https://img.shields.io/badge/Status-Portfolio%20Ready-1f7a5c)
 ![CI](https://github.com/ItsSawhill/healthcare-claims-reimbursement-intelligence/actions/workflows/ci.yml/badge.svg)
 
-## Executive Overview
+An end-to-end healthcare reimbursement analytics platform that turns synthetic claim-level data and optional CMS Medicare public benchmarks into provider risk, PMPM, reimbursement, scenario, forecast, dashboard, and executive reporting outputs.
 
-This repository is an end-to-end healthcare claims and reimbursement analytics platform built for portfolio presentation and recruiter review. It simulates the work of a Business Information Consultant, Health System Reimbursement Analyst, or healthcare analytics team supporting payer and provider leadership.
+**What it does**
 
-The project converts claim-level data into executive-ready intelligence across medical cost trends, utilization, provider performance, reimbursement benchmarking, anomaly detection, forecasting, and operational recommendations. It is intentionally more complete than a basic dashboard: the pipeline generates realistic synthetic claims, calculates healthcare finance KPIs, scores provider risk, segments providers with clustering, benchmarks reimbursement against Medicare-style rates, produces presentation-quality visuals, and writes a consulting-style executive report.
+- Simulates 20K claim-level records for reimbursement analytics without using private patient-level claims.
+- Calculates claims cost, denial, PMPM, utilization, reimbursement, and benchmark variance KPIs.
+- Scores provider financial risk and models reimbursement, utilization, and contract change scenarios.
+- Produces dashboard-ready CSVs, presentation figures, an Excel executive workbook, SQL scripts, and a Streamlit dashboard.
+- Optionally integrates CMS Medicare public provider/service data for benchmark comparison.
 
-## Healthcare Business Problem
+**Tech stack:** Python, pandas, NumPy, scikit-learn, matplotlib, Streamlit, SQL, pytest, GitHub Actions, openpyxl.
 
-Healthcare leaders need more than descriptive reporting. They need to understand:
+## Key Features
 
-- why paid claims and PMPM are changing
-- which providers and service categories are driving cost
-- whether reimbursement is aligned with benchmark expectations
-- where denial rates or utilization patterns suggest operational leakage
-- which claims, providers, or months warrant review
-- what next-month financial exposure may look like
+| Capability | Business Value | Primary Outputs |
+| --- | --- | --- |
+| Claims Analytics | Tracks paid, allowed, billed, denial, and claim volume trends. | `monthly_trends.csv`, claims summaries |
+| PMPM Modeling | Normalizes cost by member-month exposure for leadership reporting. | `monthly_trends.csv`, `utilization_summary.csv` |
+| Reimbursement Benchmarking | Compares allowed and paid amounts against benchmark expectations. | `reimbursement_benchmarking.csv` |
+| Scenario Simulation | Models rate, utilization, contract, and benchmark alignment changes. | `scenario_summary.csv`, scenario impact tables |
+| Provider Risk Scoring | Ranks providers by cost, denial, PMPM, reimbursement, and benchmark risk. | `provider_kpis.csv` |
+| Forecasting | Projects paid amount, claim volume, and PMPM with an explainable baseline. | `forecast_summary.csv`, forecast charts |
+| Streamlit Dashboard | Provides interactive review for executives and analysts. | `app.py` |
+| Executive Reporting | Packages insights into Markdown and Excel deliverables. | `executive_summary.md`, `executive_workbook.xlsx` |
+| Optional CMS Medicare Benchmark Integration | Adds real public Medicare provider/service benchmark context when a local CMS file is supplied. | `cms_provider_service_benchmarks.csv` |
 
-This platform addresses those questions with reproducible Python analytics, SQL logic, dashboard-ready CSV outputs, and executive reporting artifacts.
+## Table of Contents
 
-## Why Reimbursement Analytics Matters
+- [Quick Start](#quick-start)
+- [Project Visuals](#project-visuals)
+- [Business Problem](#business-problem)
+- [Example Business Questions](#example-business-questions)
+- [Workflow Architecture](#workflow-architecture)
+- [Data and CMS Integration](#data-and-cms-integration)
+- [Analytics Modules](#analytics-modules)
+- [Dashboard and Executive Outputs](#dashboard-and-executive-outputs)
+- [SQL Analytics Layer](#sql-analytics-layer)
+- [Testing and CI](#testing-and-ci)
+- [Repository Structure](#repository-structure)
+- [Resume Bullets](#resume-bullets)
+- [Future Improvements](#future-improvements)
 
-Reimbursement performance directly affects medical cost management, provider contracting, revenue cycle operations, payer margin, network strategy, and executive financial planning. Benchmark variance, denial rates, utilization intensity, and PMPM movement can point to avoidable cost, coding issues, authorization breakdowns, unfavorable contracts, or emerging financial risk.
+## Quick Start
 
-By combining claims analytics, utilization, reimbursement benchmarking, anomaly detection, provider segmentation, and forecasting, this repository demonstrates the kind of enterprise analytics workflow used by health plans, health systems, accountable care organizations, and reimbursement strategy teams.
+```bash
+pip install -r requirements.txt
+python src/run_pipeline.py
+streamlit run app.py
+```
 
-## Business Impact
+Run tests:
 
-This project is structured around the practical deliverables a healthcare reimbursement analyst or business information consultant would be expected to produce:
+```bash
+pytest
+```
 
-- executive reporting package for monthly leadership review
-- provider risk and reimbursement prioritization for network management
-- PMPM and utilization views for medical cost monitoring
-- anomaly queue for claims operations and reimbursement review
-- SQL logic that can be moved into an enterprise data warehouse
-- Streamlit dashboard and Excel workbook for business users who need self-service outputs
+## Project Visuals
 
-The data is synthetic, so the repository does not claim realized savings. The value is in the repeatable framework: it shows how claims data can be transformed into actionable reimbursement, utilization, and provider performance intelligence.
+The pipeline generates these figures in `outputs/figures/`.
+
+### Claims Cost Trend
+
+![Claims Cost Trend](outputs/figures/monthly_cost_trend.png)
+
+### PMPM Trend
+
+![PMPM Trend](outputs/figures/pmpm_trend.png)
+
+### Provider Risk Ranking
+
+![Provider Efficiency Ranking](outputs/figures/provider_efficiency_ranking.png)
+
+### Reimbursement Variance by Provider
+
+![Reimbursement Variance by Provider](outputs/figures/reimbursement_variance_by_provider.png)
+
+### Scenario Financial Impact
+
+![Scenario Financial Impact](outputs/figures/scenario_financial_impact.png)
+
+### Provider Scenario Exposure
+
+![Provider Scenario Exposure](outputs/figures/provider_scenario_exposure.png)
+
+Additional generated visuals include utilization trends, denial distribution, anomaly frequency, forecast charts, top provider costs, and benchmark alignment impact.
+
+## Business Problem
+
+Healthcare reimbursement teams need to answer cost, utilization, provider, and contract questions quickly:
+
+- Are claims cost and PMPM moving within expectations?
+- Which providers or services are driving paid amount growth?
+- Are denial rates or reimbursement patterns abnormal?
+- Which contract changes create the largest financial exposure?
+- How should leadership prioritize provider review?
+
+This project packages those questions into a repeatable analytics workflow for a payer/provider reimbursement analyst, business information consultant, or healthcare finance team.
+
+## Example Business Questions
+
+- Which providers are driving PMPM growth?
+- Which service categories exceed benchmark expectations?
+- What is the projected impact of a 5% reimbursement change?
+- Which providers should be prioritized for contract review?
+- Where are denial rates increasing abnormally?
 
 ## Workflow Architecture
 
-```text
-Raw or Synthetic Claims
-        |
-        v
-Ingestion
-src/ingest.py
-        |
-        v
-Preprocessing and Validation
-src/preprocess.py
-        |
-        v
-Clean Claims Table
-data/processed/claims_clean.csv
-        |
-        +--> Claims Analytics
-        |    monthly cost, claim volume, denial trends
-        |
-        +--> Utilization Analytics
-        |    PMPM, visits per 1,000, cost per visit, claims per member
-        |
-        +--> Reimbursement Analytics
-        |    paid/billed, allowed/billed, Medicare-style benchmark variance
-        |
-        +--> Provider Intelligence
-        |    KPI table, weighted efficiency score, risk tier, clustering
-        |
-        +--> Anomaly Detection
-        |    z-score, IQR, benchmark, denial, PMPM, and provider risk flags
-        |
-        +--> Forecasting
-        |    paid amount, claim volume, and PMPM forecast
-        |
-        v
-Executive Reporting and BI Outputs
-outputs/tables + outputs/figures + outputs/reports
+```mermaid
+flowchart LR
+    A[Synthetic Claims] --> C[Preprocessing]
+    B[Optional CMS Public Data] --> C
+    C --> D[Claims + Utilization Analytics]
+    D --> E[Reimbursement Benchmarking]
+    E --> F[Scenario Simulation]
+    E --> G[Forecasting + Anomaly Detection]
+    F --> H[Dashboard + Excel + Executive Report]
+    G --> H
 ```
 
-See [docs/architecture.md](docs/architecture.md) for the detailed layer-by-layer architecture.
+The same flow is implemented in `src/run_pipeline.py`, with detailed architecture notes in [docs/architecture.md](docs/architecture.md).
 
-See [docs/business_case.md](docs/business_case.md) for the mock payer reimbursement scenario, stakeholder users, business questions, and recommended actions.
+## Data and CMS Integration
 
-## Dataset
+**Synthetic claims layer**
 
-If `data/raw/claims.csv` does not exist, the pipeline generates a realistic 20,000-row synthetic claims dataset. The generated data includes:
+- Generates 20,000 simulated claim-level records when `data/raw/claims.csv` is absent.
+- Includes members, providers, service dates, diagnosis/procedure codes, payer, region, billed/allowed/paid amounts, denials, member months, and benchmark amounts.
+- Injects realistic anomalies so the analytics pipeline has meaningful review candidates.
+- Does not use real patient-level private claims.
 
-- claim, member, and provider identifiers
-- service date and paid date
-- diagnosis and procedure codes
-- service category, region, and payer
-- billed amount, allowed amount, paid amount, and member responsibility
-- denial flag
-- member months denominator
-- Medicare-style benchmark amount
+**Optional CMS public benchmark layer**
 
-The synthetic data includes injected anomalies such as high billed outpatient claims, provider denial spikes, reimbursement drops, and monthly PMPM spikes. These are included so the pipeline produces meaningful review candidates without using protected health information.
+- Supports CMS Medicare Physician & Other Practitioners by Provider and Service public data.
+- Uses a local file only: `data/raw/cms_provider_service.csv`.
+- Creates procedure, state, and service benchmark metrics when the file is present.
+- Falls back to simulated benchmark logic when the file is absent.
 
-## KPI Definitions
+CMS public source:
 
-| KPI | Definition | Business Use |
-| --- | --- | --- |
-| PMPM | `total paid amount / member months` | Normalizes medical cost by eligible member exposure. |
-| Reimbursement rate | `paid amount / billed amount` and `allowed amount / billed amount` | Measures how submitted charges convert into allowed and paid dollars. |
-| Denial rate | `denied claims / total claims` | Identifies claims payment friction and potential authorization, coding, or eligibility issues. |
-| Benchmark variance | `(allowed amount - Medicare-style benchmark) / Medicare-style benchmark` | Flags providers or service lines above or below expected reimbursement levels. |
-| Visits per 1,000 members | `visits / member months * 1,000` | Standard utilization metric for service intensity comparison. |
-| Cost per visit | `paid amount / visits` | Shows unit cost movement across service categories. |
-| Cost per member | `paid amount / unique members` | Measures cost intensity across the attributed population. |
-| Provider risk score | Weighted score using cost, denial, PMPM, benchmark variance, and total paid rank | Prioritizes providers for contract, utilization, and operational review. |
+https://data.cms.gov/provider-summary-by-type-of-service/medicare-physician-other-practitioners/medicare-physician-other-practitioners-by-provider-and-service
 
-## Advanced Analytics
+Physician Fee Schedule readiness is documented for future benchmark expansion:
 
-The project includes practical, explainable analytics designed for business review:
+- https://pfs.data.cms.gov/datasets
+- https://pfs.data.cms.gov/about/api
 
-- provider risk scoring using weighted components
-- weighted provider efficiency score
-- reimbursement deviation severity scoring
-- reimbursement scenario simulation
-- high-cost provider identification
-- cost driver analysis by provider, service category, and payer
-- provider segmentation using KMeans clustering
-- anomaly detection using z-score, IQR, and operational thresholds
-- baseline forecasting using rolling average, exponential smoothing, and recent trend
+See [docs/real_cms_data_integration.md](docs/real_cms_data_integration.md) and [docs/cms_benchmark_integration.md](docs/cms_benchmark_integration.md).
 
-These methods are intentionally transparent so a reimbursement or finance stakeholder can audit the logic before moving to more complex models.
+## Analytics Modules
 
-## Financial Impact Simulation Engine
+**Core KPIs**
 
-The project includes a reimbursement decision intelligence layer in `src/scenario_simulation.py`. It models how reimbursement structure, utilization, provider contract, and benchmark alignment changes affect paid amount, PMPM, benchmark variance, and provider exposure.
+| KPI | Definition |
+| --- | --- |
+| PMPM | `total paid amount / member months` |
+| Reimbursement rate | `paid amount / billed amount`; `allowed amount / billed amount` |
+| Denial rate | `denied claims / total claims` |
+| Benchmark variance | `(allowed amount - benchmark amount) / benchmark amount` |
+| Visits per 1,000 | `visits / member months * 1,000` |
+| Provider risk score | Weighted score using cost, denial, PMPM, benchmark variance, and total paid rank |
 
-Scenario outputs answer business questions such as:
+**Advanced analytics**
 
-- What happens if reimbursement rates increase or decrease by 5%?
-- What is the PMPM impact if utilization increases by 10%?
-- Which providers create the largest financial exposure under a reimbursement change?
-- What is the projected paid amount variance against Medicare-style benchmark rates?
+- Provider risk scoring and segmentation
+- Cost driver analysis by provider, service category, and payer
+- Reimbursement deviation severity scoring
+- Anomaly detection with z-score, IQR, and business rules
+- Baseline forecasting with rolling average, exponential smoothing, and recent trend
 
-Generated scenario tables:
+**Scenario simulation**
+
+`src/scenario_simulation.py` models:
+
+- `+5%` reimbursement rate change
+- `+10%` utilization change
+- `-5%` contract change for highest-paid providers
+- benchmark alignment impact
+
+Scenario outputs:
 
 ```text
 outputs/tables/scenario_rate_change.csv
@@ -153,145 +195,35 @@ outputs/tables/scenario_benchmark_alignment.csv
 outputs/tables/scenario_summary.csv
 ```
 
-Generated scenario figures:
+## Dashboard and Executive Outputs
 
-```text
-outputs/figures/scenario_financial_impact.png
-outputs/figures/scenario_pmpm_impact.png
-outputs/figures/provider_scenario_exposure.png
-outputs/figures/benchmark_alignment_impact.png
+**Streamlit dashboard**
+
+```bash
+streamlit run app.py
 ```
 
-Scenario examples:
+Dashboard views include:
 
-- `+5%` reimbursement rate change across paid, non-denied claims
-- `+10%` utilization change to estimate paid amount and PMPM sensitivity
-- `-5%` contract change for the highest-paid providers
-- Medicare-style benchmark alignment to estimate reimbursement variance opportunity
-
-## CMS Benchmark Readiness
-
-The pipeline keeps synthetic Medicare-style benchmarks working by default, but it is structured for real CMS benchmark integration when a local CMS export is available.
-
-Optional local CMS benchmark file:
-
-```text
-data/raw/cms_benchmarks.csv
-```
-
-Expected columns:
-
-- `procedure_code`
-- `benchmark_amount`
-- `year`
-- optional `locality`
-- optional `state`
-
-The loader in `src/cms_benchmark_loader.py` validates the file and applies benchmark amounts by procedure code. If no local CMS file exists, the pipeline falls back to synthetic Medicare-style benchmark amounts and records `benchmark_source`.
-
-Official public CMS references:
-
-- CMS Data Portal: https://data.cms.gov/
-- CMS Data API documentation: https://data.cms.gov/api-docs
-- Medicare Physician Fee Schedule datasets: https://pfs.data.cms.gov/datasets
-- Medicare Physician Fee Schedule API information: https://pfs.data.cms.gov/about/api
-
-See [docs/cms_benchmark_integration.md](docs/cms_benchmark_integration.md) for file format, limitations, and benchmark variance logic.
-
-## Real CMS Public Data Integration
-
-This project uses synthetic claims for claim-level simulation. It can optionally integrate real CMS Medicare public provider/service data for benchmark comparison. This improves reimbursement benchmarking realism without using private patient-level claims.
-
-Optional source:
-
-CMS Medicare Physician & Other Practitioners by Provider and Service  
-https://data.cms.gov/provider-summary-by-type-of-service/medicare-physician-other-practitioners/medicare-physician-other-practitioners-by-provider-and-service
-
-Real CMS public mode:
-
-1. Download the CMS provider/service CSV from the CMS Data Portal.
-2. Save it locally as `data/raw/cms_provider_service.csv`.
-3. Run `python src/run_pipeline.py`.
-4. Check `outputs/tables/cms_provider_service_benchmarks.csv`.
-
-The raw CMS file may be large and is not committed to GitHub. The pipeline falls back to simulated Medicare-style benchmarks when the file is absent.
-
-When CMS provider/service data is available, the pipeline creates procedure-code, state, and service-category benchmark outputs and enriches synthetic claims with:
-
-- `cms_avg_submitted_charge`
-- `cms_avg_medicare_allowed`
-- `cms_avg_medicare_payment`
-- `cms_allowed_variance`
-- `cms_payment_variance`
-- `cms_benchmark_source`
-
-See [docs/real_cms_data_integration.md](docs/real_cms_data_integration.md) for download instructions, expected schema, limitations, and variance logic.
-
-## Anomaly Detection
-
-The anomaly layer identifies candidates for review, not fraud determinations. It flags:
-
-- unusually high billed claims
-- high provider denial rates
-- sudden monthly PMPM or paid amount breaks
-- over-benchmark reimbursement patterns
-- abnormal provider financial risk profiles
-
-Each anomaly record includes entity type, entity ID, metric, severity, and rationale.
-
-## Forecasting
-
-The forecasting module predicts:
-
-- monthly paid amount
-- claim volume
-- PMPM
-
-The baseline forecast blends a three-month rolling average, exponential smoothing, and recent six-month slope adjustment. This creates an explainable financial planning baseline without fabricating model accuracy metrics.
-
-## Executive Reporting
-
-The generated executive report reads like a consulting deliverable and includes:
-
-- latest financial performance
-- paid amount and PMPM forecast commentary
-- top cost drivers
-- high-risk providers
-- reimbursement outliers
+- executive KPI cards
+- monthly cost and PMPM trends
+- provider risk ranking
+- reimbursement benchmarking
 - utilization trends
-- top anomaly candidates
-- operational recommendations
+- scenario sliders and provider exposure tables
+- anomaly review queue
+- forecast summary
+- embedded executive report
 
-Report path:
-
-```text
-outputs/reports/executive_summary.md
-```
-
-The pipeline also creates an Excel executive workbook with multiple tabs for business review:
+**Executive workbook**
 
 ```text
 outputs/reports/executive_workbook.xlsx
 ```
 
-Workbook tabs:
+Workbook tabs include Executive Summary, Provider KPIs, Monthly Trends, Reimbursement Benchmarking, Utilization Summary, Anomalies, Forecasts, Scenario Summary, Rate Change Impact, Utilization Impact, Provider Contract Impact, and Benchmark Alignment Impact.
 
-- Executive Summary
-- Provider KPIs
-- Monthly Trends
-- Reimbursement Benchmarking
-- Utilization Summary
-- Anomalies
-- Forecasts
-- Scenario Summary
-- Rate Change Impact
-- Utilization Impact
-- Provider Contract Impact
-- Benchmark Alignment Impact
-
-## Dashboard-Ready Outputs
-
-Core CSV outputs:
+**Dashboard-ready CSVs**
 
 ```text
 outputs/tables/provider_kpis.csv
@@ -305,141 +237,39 @@ outputs/tables/scenario_summary.csv
 outputs/tables/cms_provider_service_benchmarks.csv
 ```
 
-Additional summaries are generated by month, provider, procedure, diagnosis, region, payer, and service category.
-
-## Streamlit Dashboard
-
-The repository includes a Streamlit dashboard that reads the generated CSV outputs from `outputs/tables/`.
-
-Run the pipeline first:
-
-```bash
-python src/run_pipeline.py
-```
-
-Launch the dashboard:
-
-```bash
-streamlit run app.py
-```
-
-Dashboard views include:
-
-- executive KPI cards
-- monthly paid amount and PMPM trends
-- provider risk ranking
-- reimbursement benchmarking
-- utilization trends
-- scenario simulation with rate and utilization sliders
-- top provider exposure under scenario changes
-- anomaly review queue
-- forecast summary
-- embedded executive report
-
-## Project Visuals
-
-The pipeline generates presentation-ready charts in `outputs/figures/`.
-
-### Claims Cost Trend
-
-![Claims Cost Trend](outputs/figures/monthly_cost_trend.png)
-
-### PMPM Trend
-
-![PMPM Trend](outputs/figures/pmpm_trend.png)
-
-### Provider Efficiency and Risk Ranking
-
-![Provider Efficiency Ranking](outputs/figures/provider_efficiency_ranking.png)
-
-### Reimbursement Variance by Provider
-
-![Reimbursement Variance by Provider](outputs/figures/reimbursement_variance_by_provider.png)
-
-### Utilization Trend Dashboard
-
-![Utilization Trend Dashboard](outputs/figures/utilization_trend_dashboard.png)
-
-### Scenario Financial Impact
-
-![Scenario Financial Impact](outputs/figures/scenario_financial_impact.png)
-
-### Provider Scenario Exposure
-
-![Provider Scenario Exposure](outputs/figures/provider_scenario_exposure.png)
-
-Additional figure outputs include denial rate distribution, anomaly frequency by month, forecasted paid amount, forecasted claim volume, forecasted PMPM, top provider costs, benchmark variance by service category, scenario PMPM impact, and benchmark alignment impact.
+The generated executive narrative is saved to `outputs/reports/executive_summary.md`.
 
 ## SQL Analytics Layer
 
-The `sql/` folder mirrors core Python analytics logic and can be adapted to DuckDB, Snowflake, BigQuery, Redshift, SQL Server, or a healthcare data warehouse.
+The `sql/` folder mirrors key pipeline logic for warehouse-style reporting:
 
-Included scripts:
+- claims summary
+- monthly trend report
+- provider KPI table
+- reimbursement benchmark variance
+- anomaly candidate extraction
+- provider risk scoring
+- PMPM aggregation
+- reimbursement trends
+- denial analysis
+- utilization trends
 
-- `01_claims_summary.sql`
-- `02_monthly_trend_report.sql`
-- `03_provider_kpi_table.sql`
-- `04_reimbursement_benchmark_variance.sql`
-- `05_anomaly_candidate_extraction.sql`
-- `06_provider_risk_scoring.sql`
-- `07_pmpm_aggregation.sql`
-- `08_reimbursement_trend.sql`
-- `09_denial_analysis.sql`
-- `10_utilization_trend.sql`
+## Testing and CI
 
-## Sample Executive Insights
-
-These insights are generated from the synthetic claims pipeline and will refresh when the data refreshes:
-
-- Top providers can be ranked by total paid amount, denial rate, PMPM contribution, benchmark variance, and composite risk score.
-- Provider-service-payer combinations above the 20% benchmark threshold are surfaced for contract review.
-- Monthly PMPM and paid amount trend breaks are flagged for leadership review.
-- High-cost providers are segmented separately from denial-risk and benchmark-variance provider groups.
-- Next-month paid amount and PMPM forecasts are produced for budget monitoring.
-
-## How to Run
-
-Install dependencies:
-
-```bash
-pip install -r requirements.txt
-```
-
-Run the full pipeline:
+Local checks:
 
 ```bash
 python src/run_pipeline.py
-```
-
-The command will generate synthetic data if needed, clean and validate claims, build analytics tables, save figures, and write the executive summary.
-
-Optional real CMS public benchmark mode:
-
-```bash
-# 1. Download the CMS provider/service CSV manually from data.cms.gov
-# 2. Save it as data/raw/cms_provider_service.csv
-python src/run_pipeline.py
-```
-
-Then review:
-
-```text
-outputs/tables/cms_provider_service_benchmarks.csv
-data/processed/claims_clean.csv
-```
-
-Run the automated tests:
-
-```bash
 pytest
 ```
 
-The GitHub Actions workflow in `.github/workflows/ci.yml` installs requirements, runs the pipeline, and executes the tests on push and pull request events.
+GitHub Actions installs requirements, runs the pipeline, and executes the test suite on push and pull request events.
 
 ## Repository Structure
 
 ```text
 healthcare-claims-reimbursement-intelligence/
+├── app.py
 ├── README.md
 ├── requirements.txt
 ├── data/
@@ -447,38 +277,25 @@ healthcare-claims-reimbursement-intelligence/
 │   ├── processed/
 │   └── sample/
 ├── docs/
-│   ├── architecture.md
-│   ├── business_case.md
-│   ├── cms_benchmark_integration.md
-│   └── data_dictionary.md
-├── notebooks/
+├── outputs/
+│   ├── figures/
+│   ├── reports/
+│   └── tables/
 ├── sql/
 ├── src/
-├── tests/
-├── app.py
-├── outputs/
-│   ├── tables/
-│   ├── figures/
-│   └── reports/
-└── .gitignore
+└── tests/
 ```
 
-## Recruiter-Focused Resume Bullets
+## Resume Bullets
 
-- Built an end-to-end healthcare claims and reimbursement intelligence platform using Python, pandas, SQL, scikit-learn, and statistical anomaly detection across 20,000 synthetic claim records.
-- Developed provider-level reimbursement and financial risk scoring using paid amount, denial rate, PMPM contribution, benchmark variance, and weighted efficiency metrics.
-- Created Medicare-style benchmark analytics to identify above-benchmark providers, reimbursement deviation severity, and contract review opportunities.
-- Modeled financial impact of reimbursement rate, utilization, and provider contract changes using claims-level analytics, PMPM calculations, Medicare-style benchmark variance, and provider exposure ranking.
-- Implemented provider segmentation with clustering and cost-driver analysis to prioritize operational, reimbursement, and utilization management interventions.
-- Produced executive-ready CSV outputs, figures, SQL scripts, forecasts, and a consulting-style Markdown report for dashboard and leadership reporting workflows.
+- Built an end-to-end healthcare reimbursement analytics platform using Python, SQL, Streamlit, and statistical modeling across 20K synthetic claims enriched with optional CMS Medicare benchmark data.
+- Developed provider risk scoring, PMPM analytics, reimbursement benchmarking, anomaly detection, and financial impact simulation for healthcare cost and utilization analysis.
+- Created executive-ready dashboards, forecasts, SQL reporting pipelines, and reimbursement scenario simulations to support payer/provider decision-making.
 
 ## Future Improvements
 
-- Replace synthetic data with de-identified claims, eligibility, provider contract, and fee schedule extracts.
-- Extend CMS provider/service and Physician Fee Schedule matching with locality, modifier, year, specialty, and facility/non-facility logic.
+- Add locality, modifier, year, specialty, and facility/non-facility logic for CMS benchmark matching.
 - Add member risk adjustment and product-line segmentation.
-- Incorporate DRG, revenue code, place of service, modifiers, and contract terms.
-- Backtest forecast accuracy before adding Prophet, ARIMA, XGBoost, or LightGBM.
-- Add labeled anomaly outcomes and evaluate supervised anomaly classification.
-- Build a Streamlit, Tableau, or Power BI front end on top of the generated output tables.
-- Add automated data quality tests and CI checks for monthly refreshes.
+- Add DRG, revenue code, place of service, and contract term detail.
+- Backtest forecasts before adding Prophet, ARIMA, XGBoost, or LightGBM.
+- Add labeled anomaly outcomes for supervised review models.
