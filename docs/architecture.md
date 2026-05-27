@@ -38,6 +38,10 @@ z-score, IQR, risk rules               rolling average + smoothing
         +--------------------+-------------------+
                              |
                              v
+Scenario Simulation
+rate, utilization, contract, and benchmark alignment impact
+                             |
+                             v
 Reporting and BI Outputs
 outputs/tables + outputs/figures + outputs/reports
 ```
@@ -72,6 +76,8 @@ The analytics layer produces reusable, dashboard-ready views:
 - `reimbursement.py`: paid-to-billed rate, allowed-to-billed rate, benchmark variance
 - `provider_kpis.py`: provider-level cost, denial, reimbursement, and efficiency measures
 - `advanced_analytics.py`: provider risk scoring, weighted efficiency scoring, reimbursement deviation severity, clustering, and cost driver analysis
+- `scenario_simulation.py`: reimbursement rate, utilization, provider contract, and benchmark alignment impact modeling
+- `cms_benchmark_loader.py`: optional local CMS benchmark file validation with synthetic benchmark fallback
 
 ## Forecasting Layer
 
@@ -107,6 +113,8 @@ The output is an explainable candidate list, not an automated fraud determinatio
 - provider efficiency/risk ranking
 - anomaly frequency by month
 - utilization trend dashboard plot
+- scenario financial impact plots
+- executive Excel workbook with scenario tabs
 
 The executive report is written to:
 
@@ -127,5 +135,10 @@ Core outputs include:
 - `cost_driver_analysis.csv`
 - `anomalies.csv`
 - `forecast_summary.csv`
+- `scenario_summary.csv`
+- `scenario_rate_change.csv`
+- `scenario_utilization_change.csv`
+- `scenario_provider_contract_change.csv`
+- `scenario_benchmark_alignment.csv`
 
 These tables are intentionally denormalized and readable so analysts and hiring managers can inspect the business logic without needing a database.

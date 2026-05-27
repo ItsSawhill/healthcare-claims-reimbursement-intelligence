@@ -20,3 +20,4 @@
 | payer | Payer or line of business. |
 | member_months | Monthly eligibility denominator attached to claims in that service month. |
 | medicare_benchmark_amount | Medicare-style benchmark amount used for reimbursement variance analysis. |
+| benchmark_source | Indicates whether the benchmark came from the synthetic fallback or a local CMS benchmark file. |

@@ -37,10 +37,16 @@
 - The next-month paid forecast is $928,841, based on a blend of rolling average, exponential smoothing, and recent trend.
 - The next-month PMPM forecast is $96.73; leadership should compare this value with budget and medical cost targets.
 
+## Scenario Simulation
+- Largest modeled scenario impact: Medicare Benchmark Alignment, with $-3,047,577 paid amount impact and $-317.03 PMPM impact.
+- Scenario outputs compare baseline paid amount against reimbursement rate, utilization, provider contract, and benchmark alignment changes.
+- Provider exposure rankings identify which provider relationships create the largest financial sensitivity under reimbursement structure changes.
+
 ## Recommended Actions
 1. Review high-benchmark providers for contract terms, coding mix, and medical necessity documentation.
 2. Audit providers with elevated denial rates to identify authorization, eligibility, and coding defects.
 3. Monitor next-month PMPM and paid forecast against budget; create an escalation threshold for variance above 5%.
 4. Prioritize service categories with persistent above-benchmark reimbursement for renegotiation or utilization management.
 5. Use provider segments to tailor interventions: contract review for high-cost providers, denial workflow review for denial-risk providers, and utilization management for high-PMPM service lines.
-6. Refresh this pipeline monthly and publish the CSV outputs to the executive dashboard layer.
+6. Use scenario outputs during provider negotiations to quantify paid amount, PMPM, and benchmark variance exposure before contract changes are finalized.
+7. Refresh this pipeline monthly and publish the CSV outputs to the executive dashboard layer.

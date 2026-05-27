@@ -147,6 +147,7 @@ def write_executive_summary(
     forecast: pd.DataFrame,
     utilization: pd.DataFrame,
     cost_drivers: pd.DataFrame,
+    scenario_summary: pd.DataFrame,
     report_path: Path,
 ) -> None:
     report_path.parent.mkdir(parents=True, exist_ok=True)
@@ -169,6 +170,7 @@ def write_executive_summary(
         cost_per_visit=("cost_per_visit", "mean"),
         pmpm=("pmpm", "sum"),
     ).reset_index().sort_values("service_month").iloc[-1]
+    top_scenario = scenario_summary.sort_values("dollar_impact", key=lambda s: s.abs(), ascending=False).iloc[0]
 
     text = f"""# Executive Summary
 
@@ -205,13 +207,19 @@ def write_executive_summary(
 - The next-month paid forecast is ${next_paid.forecast_value:,.0f}, based on a blend of rolling average, exponential smoothing, and recent trend.
 - The next-month PMPM forecast is ${next_pmpm.forecast_value:,.2f}; leadership should compare this value with budget and medical cost targets.
 
+## Scenario Simulation
+- Largest modeled scenario impact: {top_scenario.scenario_name}, with ${top_scenario.dollar_impact:,.0f} paid amount impact and ${top_scenario.pmpm_impact:,.2f} PMPM impact.
+- Scenario outputs compare baseline paid amount against reimbursement rate, utilization, provider contract, and benchmark alignment changes.
+- Provider exposure rankings identify which provider relationships create the largest financial sensitivity under reimbursement structure changes.
+
 ## Recommended Actions
 1. Review high-benchmark providers for contract terms, coding mix, and medical necessity documentation.
 2. Audit providers with elevated denial rates to identify authorization, eligibility, and coding defects.
 3. Monitor next-month PMPM and paid forecast against budget; create an escalation threshold for variance above 5%.
 4. Prioritize service categories with persistent above-benchmark reimbursement for renegotiation or utilization management.
 5. Use provider segments to tailor interventions: contract review for high-cost providers, denial workflow review for denial-risk providers, and utilization management for high-PMPM service lines.
-6. Refresh this pipeline monthly and publish the CSV outputs to the executive dashboard layer.
+6. Use scenario outputs during provider negotiations to quantify paid amount, PMPM, and benchmark variance exposure before contract changes are finalized.
+7. Refresh this pipeline monthly and publish the CSV outputs to the executive dashboard layer.
 """
     report_path.write_text(text)
 
@@ -223,6 +231,11 @@ def write_excel_workbook(
     utilization: pd.DataFrame,
     anomalies: pd.DataFrame,
     forecast: pd.DataFrame,
+    scenario_summary: pd.DataFrame,
+    rate_change: pd.DataFrame,
+    utilization_impact: pd.DataFrame,
+    provider_contract: pd.DataFrame,
+    benchmark_alignment: pd.DataFrame,
     workbook_path: Path,
 ) -> None:
     workbook_path.parent.mkdir(parents=True, exist_ok=True)
@@ -253,6 +266,11 @@ def write_excel_workbook(
         utilization.to_excel(writer, sheet_name="Utilization Summary", index=False)
         anomalies.to_excel(writer, sheet_name="Anomalies", index=False)
         forecast.to_excel(writer, sheet_name="Forecasts", index=False)
+        scenario_summary.to_excel(writer, sheet_name="Scenario Summary", index=False)
+        rate_change.to_excel(writer, sheet_name="Rate Change Impact", index=False)
+        utilization_impact.to_excel(writer, sheet_name="Utilization Impact", index=False)
+        provider_contract.to_excel(writer, sheet_name="Provider Contract Impact", index=False)
+        benchmark_alignment.to_excel(writer, sheet_name="Benchmark Alignment Impact", index=False)
 
         for sheet in writer.book.worksheets:
             sheet.freeze_panes = "A2"
