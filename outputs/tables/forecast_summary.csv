@@ -1,0 +1,10 @@
+forecast_month,metric,forecast_value,method,lookback_months
+2026-01-01,total_paid,928840.6061305834,3-month rolling average + exponential smoothing,24
+2026-02-01,total_paid,939658.3021305834,3-month rolling average + exponential smoothing,24
+2026-03-01,total_paid,950475.9981305834,3-month rolling average + exponential smoothing,24
+2026-01-01,total_claims,832.4892129551583,3-month rolling average + exponential smoothing,24
+2026-02-01,total_claims,842.2892129551584,3-month rolling average + exponential smoothing,24
+2026-03-01,total_claims,852.0892129551584,3-month rolling average + exponential smoothing,24
+2026-01-01,pmpm,96.73307130912856,3-month rolling average + exponential smoothing,24
+2026-02-01,pmpm,97.56961082849423,3-month rolling average + exponential smoothing,24
+2026-03-01,pmpm,98.40615034785989,3-month rolling average + exponential smoothing,24
