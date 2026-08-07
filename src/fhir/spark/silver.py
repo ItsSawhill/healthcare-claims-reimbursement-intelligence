@@ -84,6 +84,8 @@ def transform_coverage(bronze: DataFrame) -> DataFrame:
     """Normalize Coverage resources."""
     coverage = _valid(bronze, "Coverage").select(
         F.col("resource_id").alias("source_resource_id"),
+        "source_dataset",
+        "provenance_classification",
         F.get_json_object("raw_json", "$.id").alias("coverage_id"),
         _ref_id(F.get_json_object("raw_json", "$.beneficiary.reference")).alias("patient_id"),
         F.get_json_object("raw_json", "$.status").alias("coverage_status"),
@@ -103,6 +105,8 @@ def transform_coverage(bronze: DataFrame) -> DataFrame:
         F.to_date(F.col("period.start")).alias("coverage_start"),
         F.to_date(F.col("period.end")).alias("coverage_end"),
         "source_resource_id",
+        "source_dataset",
+        "provenance_classification",
     )
 
 

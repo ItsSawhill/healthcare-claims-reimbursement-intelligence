@@ -1,0 +1,37 @@
+{
+  "bronze_row_count": 342,
+  "duplicate_resources_skipped": 0,
+  "gold_row_counts": {
+    "claim_type_summary": 3,
+    "fhir_data_quality_summary": 34,
+    "financial_component_summary": 19,
+    "high_cost_claims": 162,
+    "member_months": 4176,
+    "monthly_reimbursement": 46,
+    "patient_spending_concentration": 36,
+    "patient_utilization": 36,
+    "pmpm_summary": 46,
+    "provider_population_summary": 181,
+    "provider_reimbursement": 181,
+    "service_cost_summary": 7
+  },
+  "input_resource_count": 342,
+  "invalid_resources": 0,
+  "major_stage_runtimes_seconds": {
+    "bronze": 4.477,
+    "gold": 7.495,
+    "silver": 12.634
+  },
+  "pipeline_runtime_seconds": 85.081,
+  "reconciliation_status": true,
+  "silver_row_counts": {
+    "claim_diagnosis": 72,
+    "claim_header": 162,
+    "claim_line": 216,
+    "claim_line_financial": 1368,
+    "claim_provider": 198,
+    "coverage": 144,
+    "data_quality_results": 14,
+    "patient": 36
+  }
+}

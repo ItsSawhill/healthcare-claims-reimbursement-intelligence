@@ -64,6 +64,13 @@ Run the FHIR Spark Gold pipeline locally against included synthetic fixtures:
 python databricks/02_build_fhir_gold.py --output-format parquet
 ```
 
+Run the expanded synthetic FHIR population pipeline:
+
+```bash
+python databricks/03_extract_blue_button_synthetic.py --mode fixture --beneficiary-count 36
+python databricks/04_build_fhir_population_gold.py --input data/raw/fhir/population --output-format parquet
+```
+
 Run tests:
 
 ```bash
@@ -99,6 +106,8 @@ The pipeline generates these figures in `outputs/figures/`.
 ![Provider Scenario Exposure](outputs/figures/provider_scenario_exposure.png)
 
 Additional generated visuals include utilization trends, denial distribution, anomaly frequency, forecast charts, top provider costs, and benchmark alignment impact.
+
+FHIR population visuals are written to `outputs/figures/fhir_population/`, including claim mix, spending concentration, PMPM, provider volume, service-code distribution, and FHIR completeness charts.
 
 ## Business Problem
 
@@ -170,6 +179,15 @@ See [docs/real_cms_data_integration.md](docs/real_cms_data_integration.md) and [
 - Normalizes Silver patient, coverage, claim header, claim line, diagnosis, provider, financial component, and quality tables with PySpark.
 - Builds Gold reimbursement analytics that keep Carrier provider-paid, Outpatient covered-paid, and PDE Part D payment/drug-cost concepts separate.
 - Writes portfolio artifacts such as `outputs/metrics/gold_pipeline_summary.json`, `outputs/tables/fhir_claim_type_summary.csv`, and `reports/fhir_interview_findings.md`.
+
+**Phase 4 synthetic FHIR population**
+
+- Builds a provenance-labeled 36-beneficiary synthetic cohort from adapted CMS Blue Button synthetic templates and documentation-based claim-shape fixtures.
+- Produces 342 Bronze resources, 162 EOBs, 216 claim lines, 198 provider records, and 1,368 financial adjudication records.
+- Adds population Gold tables for member months, claim-type-specific PMPM, spending concentration, provider population analytics, and high-cost claim distributions.
+- Reconciles Bronze Patient/EOB counts to Silver, Silver line counts to Gold services, and Silver financial records to Gold component summaries.
+- Key computed findings: mean claim-type-aware patient cost basis is `$282.93`; top 10% of synthetic beneficiaries account for `18.7%` of selected cost basis; high-cost flags identify `10/162` claims using within-type percentiles.
+- Detailed methodology and limitations are in [reports/fhir_interview_findings.md](reports/fhir_interview_findings.md), [docs/fhir_population_data_source_assessment.md](docs/fhir_population_data_source_assessment.md), [docs/fhir_member_month_methodology.md](docs/fhir_member_month_methodology.md), and [docs/fhir_cost_basis_methodology.md](docs/fhir_cost_basis_methodology.md).
 
 Setup details are in [docs/databricks_setup.md](docs/databricks_setup.md).
 

@@ -1,35 +1,35 @@
 resource_type,claim_type_code,metric_name,numerator,denominator,percentage
-ExplanationOfBenefit,PDE,EOBs with patient reference,10,10,1.0
-ExplanationOfBenefit,PDE,EOBs with diagnoses,0,10,0.0
-ExplanationOfBenefit,PDE,valid service period rate,10,10,1.0
-ExplanationOfBenefit,OUTPATIENT,EOBs with patient reference,1,1,1.0
-ExplanationOfBenefit,OUTPATIENT,EOBs with diagnoses,1,1,1.0
-ExplanationOfBenefit,OUTPATIENT,valid service period rate,1,1,1.0
-ExplanationOfBenefit,CARRIER,EOBs with patient reference,1,1,1.0
-ExplanationOfBenefit,CARRIER,EOBs with diagnoses,1,1,1.0
-ExplanationOfBenefit,CARRIER,valid service period rate,1,1,1.0
-ExplanationOfBenefit,PDE,EOBs with provider attribution,10,10,1.0
-ExplanationOfBenefit,OUTPATIENT,EOBs with provider attribution,1,1,1.0
-ExplanationOfBenefit,CARRIER,EOBs with provider attribution,1,1,1.0
-ExplanationOfBenefit.item,PDE,claim lines with service codes,10,10,1.0
-ExplanationOfBenefit.item,PDE,claim lines with any financial data,10,10,1.0
-ExplanationOfBenefit.item,PDE,claim lines with submitted amount,0,10,0.0
-ExplanationOfBenefit.item,PDE,claim lines with allowed amount,0,10,0.0
-ExplanationOfBenefit.item,PDE,claim lines with provider paid amount,0,10,0.0
-ExplanationOfBenefit.item,PDE,claim lines with covered paid amount,0,10,0.0
-ExplanationOfBenefit.item,OUTPATIENT,claim lines with service codes,2,2,1.0
-ExplanationOfBenefit.item,OUTPATIENT,claim lines with any financial data,1,2,0.5
-ExplanationOfBenefit.item,OUTPATIENT,claim lines with submitted amount,1,2,0.5
-ExplanationOfBenefit.item,OUTPATIENT,claim lines with allowed amount,0,2,0.0
-ExplanationOfBenefit.item,OUTPATIENT,claim lines with provider paid amount,0,2,0.0
-ExplanationOfBenefit.item,OUTPATIENT,claim lines with covered paid amount,1,2,0.5
-ExplanationOfBenefit.item,CARRIER,claim lines with service codes,2,2,1.0
-ExplanationOfBenefit.item,CARRIER,claim lines with any financial data,2,2,1.0
-ExplanationOfBenefit.item,CARRIER,claim lines with submitted amount,2,2,1.0
-ExplanationOfBenefit.item,CARRIER,claim lines with allowed amount,2,2,1.0
-ExplanationOfBenefit.item,CARRIER,claim lines with provider paid amount,2,2,1.0
-ExplanationOfBenefit.item,CARRIER,claim lines with covered paid amount,0,2,0.0
-ExplanationOfBenefit.item.adjudication,PDE,unsupported financial code rate,0,90,0.0
-ExplanationOfBenefit.item.adjudication,OUTPATIENT,unsupported financial code rate,1,4,0.25
-ExplanationOfBenefit.item.adjudication,CARRIER,unsupported financial code rate,0,9,0.0
-FHIR resources,ALL,duplicate resource rate,0,17,0.0
+ExplanationOfBenefit,OUTPATIENT,EOBs with patient reference,18,18,1.0
+ExplanationOfBenefit,OUTPATIENT,EOBs with diagnoses,18,18,1.0
+ExplanationOfBenefit,OUTPATIENT,valid service period rate,18,18,1.0
+ExplanationOfBenefit,PDE,EOBs with patient reference,108,108,1.0
+ExplanationOfBenefit,PDE,EOBs with diagnoses,0,108,0.0
+ExplanationOfBenefit,PDE,valid service period rate,108,108,1.0
+ExplanationOfBenefit,CARRIER,EOBs with patient reference,36,36,1.0
+ExplanationOfBenefit,CARRIER,EOBs with diagnoses,36,36,1.0
+ExplanationOfBenefit,CARRIER,valid service period rate,36,36,1.0
+ExplanationOfBenefit,OUTPATIENT,EOBs with provider attribution,18,18,1.0
+ExplanationOfBenefit,PDE,EOBs with provider attribution,108,108,1.0
+ExplanationOfBenefit,CARRIER,EOBs with provider attribution,36,36,1.0
+ExplanationOfBenefit.item,OUTPATIENT,claim lines with service codes,36,36,1.0
+ExplanationOfBenefit.item,OUTPATIENT,claim lines with any financial data,18,36,0.5
+ExplanationOfBenefit.item,OUTPATIENT,claim lines with submitted amount,18,36,0.5
+ExplanationOfBenefit.item,OUTPATIENT,claim lines with allowed amount,0,36,0.0
+ExplanationOfBenefit.item,OUTPATIENT,claim lines with provider paid amount,0,36,0.0
+ExplanationOfBenefit.item,OUTPATIENT,claim lines with covered paid amount,18,36,0.5
+ExplanationOfBenefit.item,PDE,claim lines with service codes,108,108,1.0
+ExplanationOfBenefit.item,PDE,claim lines with any financial data,108,108,1.0
+ExplanationOfBenefit.item,PDE,claim lines with submitted amount,0,108,0.0
+ExplanationOfBenefit.item,PDE,claim lines with allowed amount,0,108,0.0
+ExplanationOfBenefit.item,PDE,claim lines with provider paid amount,0,108,0.0
+ExplanationOfBenefit.item,PDE,claim lines with covered paid amount,0,108,0.0
+ExplanationOfBenefit.item,CARRIER,claim lines with service codes,72,72,1.0
+ExplanationOfBenefit.item,CARRIER,claim lines with any financial data,72,72,1.0
+ExplanationOfBenefit.item,CARRIER,claim lines with submitted amount,72,72,1.0
+ExplanationOfBenefit.item,CARRIER,claim lines with allowed amount,72,72,1.0
+ExplanationOfBenefit.item,CARRIER,claim lines with provider paid amount,72,72,1.0
+ExplanationOfBenefit.item,CARRIER,claim lines with covered paid amount,0,72,0.0
+ExplanationOfBenefit.item.adjudication,OUTPATIENT,unsupported financial code rate,18,72,0.25
+ExplanationOfBenefit.item.adjudication,PDE,unsupported financial code rate,0,972,0.0
+ExplanationOfBenefit.item.adjudication,CARRIER,unsupported financial code rate,0,324,0.0
+FHIR resources,ALL,duplicate resource rate,0,342,0.0

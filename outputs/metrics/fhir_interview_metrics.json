@@ -1,57 +1,57 @@
 {
-  "claim_line_count": 14,
-  "claim_lines_with_financial_pct": 0.9285714285714286,
+  "claim_line_count": 216,
+  "claim_lines_with_financial_pct": 0.9166666666666666,
   "claim_lines_with_service_code_pct": 1.0,
   "claim_type_financial_metrics": {
     "CARRIER": {
-      "total_allowed_amount": 140.0,
-      "total_beneficiary_paid_amount": 19.0,
+      "total_allowed_amount": 7110.6,
+      "total_beneficiary_paid_amount": 965.0100000000002,
       "total_covered_paid_amount": 0.0,
       "total_drug_cost": 0.0,
       "total_part_d_patient_paid": 0.0,
       "total_part_d_plan_paid": 0.0,
-      "total_provider_paid_amount": 112.0,
-      "total_submitted_amount": 255.0
+      "total_provider_paid_amount": 5688.4800000000005,
+      "total_submitted_amount": 12951.449999999999
     },
     "OUTPATIENT": {
       "total_allowed_amount": 0.0,
       "total_beneficiary_paid_amount": 0.0,
-      "total_covered_paid_amount": 118.0,
+      "total_covered_paid_amount": 2988.94,
       "total_drug_cost": 0.0,
       "total_part_d_patient_paid": 0.0,
       "total_part_d_plan_paid": 0.0,
       "total_provider_paid_amount": 0.0,
-      "total_submitted_amount": 220.0
+      "total_submitted_amount": 5572.599999999999
     },
     "PDE": {
       "total_allowed_amount": 0.0,
       "total_beneficiary_paid_amount": 0.0,
       "total_covered_paid_amount": 0.0,
-      "total_drug_cost": 210.0,
-      "total_part_d_patient_paid": 70.0,
-      "total_part_d_plan_paid": 140.0,
+      "total_drug_cost": 1508.1,
+      "total_part_d_patient_paid": 503.99999999999994,
+      "total_part_d_plan_paid": 500.1,
       "total_provider_paid_amount": 0.0,
       "total_submitted_amount": 0.0
     }
   },
   "claim_types": {
-    "CARRIER": 1,
-    "OUTPATIENT": 1,
-    "PDE": 10
+    "CARRIER": 36,
+    "OUTPATIENT": 18,
+    "PDE": 108
   },
-  "eob_count": 12,
-  "eobs_with_diagnosis_pct": 0.16666666666666666,
+  "eob_count": 162,
+  "eobs_with_diagnosis_pct": 0.3333333333333333,
   "eobs_with_provider_pct": 1.0,
-  "financial_record_count": 103,
-  "high_cost_claim_count": 3,
-  "provider_count": 13,
-  "resource_count": 17,
+  "financial_record_count": 1368,
+  "high_cost_claim_count": 10,
+  "provider_count": 198,
+  "resource_count": 342,
   "service_code_systems": {
-    "http://hl7.org/fhir/sid/ndc": 10,
-    "https://bluebutton.cms.gov/resources/codesystem/hcpcs": 4
+    "http://hl7.org/fhir/sid/ndc": 108,
+    "https://bluebutton.cms.gov/resources/codesystem/hcpcs": 108
   },
-  "service_date_max": "2024-04-03",
-  "service_date_min": "2015-06-01",
-  "unique_service_codes": 13,
-  "unsupported_financial_code_count": 1
+  "service_date_max": "2025-05-08",
+  "service_date_min": "2015-10-18",
+  "unique_service_codes": 7,
+  "unsupported_financial_code_count": 18
 }

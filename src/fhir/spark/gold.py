@@ -220,6 +220,7 @@ def build_monthly_reimbursement(silver: dict[str, DataFrame]) -> DataFrame:
         _sum_col("beneficiary_paid_amount"),
         F.coalesce(F.sum("total_part_d_plan_paid"), F.lit(0.0)).alias("total_part_d_plan_paid"),
         F.coalesce(F.sum("total_part_d_patient_paid"), F.lit(0.0)).alias("total_part_d_patient_paid"),
+        F.coalesce(F.sum("total_drug_cost"), F.lit(0.0)).alias("total_drug_cost"),
     )
 
 
@@ -272,6 +273,182 @@ def build_high_cost_claims(silver: dict[str, DataFrame], percentile_threshold: f
         "claim_type_percentile",
         "overall_percentile_if_comparable",
         "high_cost_flag",
+    )
+
+
+def build_member_months(silver: dict[str, DataFrame]) -> DataFrame:
+    """Build unique active member months from Coverage periods.
+
+    Open-ended coverage is capped at the observed claim analysis window end.
+    Overlapping coverage rows are retained by coverage type, while downstream
+    PMPM denominators use distinct patient-months to avoid double-counting.
+    """
+    coverage = silver["coverage"]
+    header = silver["claim_header"]
+    window_dates = header.agg(F.min("service_start").alias("analysis_start"), F.max("service_end").alias("analysis_end")).first()
+    analysis_start = window_dates["analysis_start"]
+    analysis_end = window_dates["analysis_end"]
+    if analysis_start is None or analysis_end is None:
+        return coverage.sparkSession.createDataFrame(
+            [],
+            "patient_id string, coverage_month date, coverage_active_flag boolean, coverage_type_code string, source_coverage_id string, source_dataset string",
+        )
+    prepared = coverage.where(F.col("coverage_start").isNotNull()).select(
+        "patient_id",
+        "coverage_type_code",
+        F.col("coverage_id").alias("source_coverage_id"),
+        F.coalesce("source_dataset", F.lit("unknown")).alias("source_dataset"),
+        F.greatest(F.date_trunc("month", "coverage_start").cast("date"), F.lit(analysis_start.replace(day=1))).alias("start_month"),
+        F.least(
+            F.date_trunc("month", F.coalesce("coverage_end", F.lit(analysis_end))).cast("date"),
+            F.lit(analysis_end.replace(day=1)),
+        ).alias("end_month"),
+    )
+    return (
+        prepared.where(F.col("end_month") >= F.col("start_month"))
+        .withColumn("coverage_month", F.explode(F.sequence("start_month", "end_month", F.expr("interval 1 month"))))
+        .select(
+            "patient_id",
+            "coverage_month",
+            F.lit(True).alias("coverage_active_flag"),
+            "coverage_type_code",
+            "source_coverage_id",
+            "source_dataset",
+        )
+        .dropDuplicates(["patient_id", "coverage_month", "coverage_type_code"])
+    )
+
+
+def build_pmpm_summary(silver: dict[str, DataFrame], member_months: DataFrame) -> DataFrame:
+    """Build claim-type-specific PMPM metrics with distinct patient-month denominators."""
+    monthly = build_monthly_reimbursement(silver)
+    denominator = member_months.where(F.col("coverage_active_flag")).groupBy(F.col("coverage_month").alias("service_month")).agg(
+        F.countDistinct("patient_id").alias("member_months")
+    )
+    result = monthly.join(denominator, "service_month", "left")
+    for column in [
+        "submitted",
+        "allowed",
+        "provider_paid",
+        "covered_paid",
+        "part_d_plan_paid",
+        "part_d_patient_paid",
+        "drug_cost",
+    ]:
+        total_col = f"total_{column}_amount" if column not in {"part_d_plan_paid", "part_d_patient_paid", "drug_cost"} else f"total_{column}"
+        if column == "drug_cost":
+            total_col = "total_drug_cost"
+        pmpm_col = f"pmpm_{column}"
+        result = result.withColumn(
+            pmpm_col,
+            F.when((F.col("member_months") > 0) & F.col(total_col).isNotNull(), F.col(total_col) / F.col("member_months")),
+        )
+    return result.select(
+        "service_month",
+        "claim_type_code",
+        F.coalesce("member_months", F.lit(0)).alias("member_months"),
+        "claim_count",
+        "total_submitted_amount",
+        "total_allowed_amount",
+        "total_provider_paid_amount",
+        "total_covered_paid_amount",
+        "total_beneficiary_paid_amount",
+        "total_part_d_plan_paid",
+        "total_part_d_patient_paid",
+        "total_drug_cost",
+        "pmpm_submitted",
+        "pmpm_allowed",
+        "pmpm_provider_paid",
+        "pmpm_covered_paid",
+        "pmpm_part_d_plan_paid",
+        "pmpm_part_d_patient_paid",
+        "pmpm_drug_cost",
+    )
+
+
+def build_patient_spending_concentration(silver: dict[str, DataFrame], member_months: DataFrame) -> DataFrame:
+    """Build patient spending concentration from claim-type-aware cost basis."""
+    costs = _claim_cost_basis(silver).where(F.col("cost_basis_amount").isNotNull())
+    active_months = member_months.where(F.col("coverage_active_flag")).groupBy("patient_id").agg(
+        F.countDistinct("coverage_month").alias("active_months")
+    )
+    providers = silver["claim_provider"].groupBy("patient_id").agg(
+        F.countDistinct(F.coalesce("provider_identifier", "provider_reference")).alias("unique_provider_count")
+    )
+    services = silver["claim_line"].groupBy("patient_id").agg(
+        F.count("*").alias("claim_line_count"),
+        F.countDistinct("service_code").alias("unique_service_count"),
+    )
+    patient = costs.groupBy("patient_id").agg(
+        F.sum("cost_basis_amount").alias("total_cost_basis"),
+        F.countDistinct("eob_id").alias("claim_count"),
+    )
+    base = patient.join(services, "patient_id", "left").join(providers, "patient_id", "left").join(active_months, "patient_id", "left")
+    ordered = Window.orderBy(F.col("total_cost_basis").asc())
+    spend_desc = Window.orderBy(F.col("total_cost_basis").desc(), F.col("patient_id"))
+    all_rows = Window.rowsBetween(Window.unboundedPreceding, Window.unboundedFollowing)
+    cumulative = Window.orderBy(F.col("total_cost_basis").desc(), F.col("patient_id")).rowsBetween(Window.unboundedPreceding, Window.currentRow)
+    return (
+        base.withColumn("active_months", F.coalesce("active_months", F.lit(0)))
+        .withColumn("cost_per_active_month", F.when(F.col("active_months") > 0, F.col("total_cost_basis") / F.col("active_months")))
+        .withColumn("population_percentile", F.cume_dist().over(ordered))
+        .withColumn("_row_desc", F.row_number().over(spend_desc))
+        .withColumn("_population_count", F.count("*").over(all_rows))
+        .withColumn("top_1_pct_flag", F.when(F.col("_population_count") >= 100, F.col("_row_desc") <= F.ceil(F.col("_population_count") * F.lit(0.01))).otherwise(F.lit(False)))
+        .withColumn("top_5_pct_flag", F.col("_row_desc") <= F.ceil(F.col("_population_count") * F.lit(0.05)))
+        .withColumn("top_10_pct_flag", F.col("_row_desc") <= F.ceil(F.col("_population_count") * F.lit(0.10)))
+        .withColumn("top_20_pct_flag", F.col("_row_desc") <= F.ceil(F.col("_population_count") * F.lit(0.20)))
+        .withColumn("_total_spend", F.sum("total_cost_basis").over(all_rows))
+        .withColumn("_cumulative_spend", F.sum("total_cost_basis").over(cumulative))
+        .withColumn("cumulative_spend_share", F.when(F.col("_total_spend") > 0, F.col("_cumulative_spend") / F.col("_total_spend")))
+        .select(
+            "patient_id",
+            "total_cost_basis",
+            "claim_count",
+            "claim_line_count",
+            F.coalesce("unique_provider_count", F.lit(0)).alias("unique_provider_count"),
+            "unique_service_count",
+            "active_months",
+            "cost_per_active_month",
+            "population_percentile",
+            "top_1_pct_flag",
+            "top_5_pct_flag",
+            "top_10_pct_flag",
+            "top_20_pct_flag",
+            "cumulative_spend_share",
+        )
+    )
+
+
+def build_provider_population_summary(silver: dict[str, DataFrame]) -> DataFrame:
+    """Build provider population analytics with double-count protection."""
+    providers = silver["claim_provider"]
+    line = _line_enriched(silver)
+    provider_counts = providers.groupBy("eob_id").agg(F.count("*").alias("provider_rows_for_eob"))
+    costs = _claim_cost_basis(silver).select("eob_id", "cost_basis_amount")
+    joined = providers.join(provider_counts, "eob_id", "left").join(line, ["eob_id", "patient_id"], "left").join(costs, "eob_id", "left")
+    grouped = joined.groupBy(
+        F.coalesce("provider_identifier", "provider_reference").alias("provider_identifier"),
+        F.col("provider_role_code").alias("provider_role"),
+        "provider_source",
+    ).agg(
+        F.countDistinct("patient_id").alias("patient_count"),
+        F.countDistinct("eob_id").alias("claim_count"),
+        F.countDistinct(F.struct("eob_id", "line_number")).alias("claim_line_count"),
+        F.countDistinct("service_code").alias("unique_service_count"),
+        F.sum(F.when(F.col("provider_rows_for_eob") == 1, F.col("cost_basis_amount"))).alias("attributable_cost_basis_total"),
+    )
+    volume_window = Window.orderBy(F.col("claim_count").asc())
+    cost_window = Window.orderBy(F.col("attributable_cost_basis_total").asc_nulls_first())
+    return grouped.withColumn(
+        "average_cost_per_claim",
+        F.when(F.col("claim_count") > 0, F.col("attributable_cost_basis_total") / F.col("claim_count")),
+    ).withColumn(
+        "average_cost_per_patient",
+        F.when(F.col("patient_count") > 0, F.col("attributable_cost_basis_total") / F.col("patient_count")),
+    ).withColumn("provider_volume_percentile", F.cume_dist().over(volume_window)).withColumn(
+        "provider_cost_percentile",
+        F.cume_dist().over(cost_window),
     )
 
 
@@ -370,6 +547,10 @@ def build_gold_tables(
         "monthly_reimbursement": build_monthly_reimbursement(silver),
         "high_cost_claims": build_high_cost_claims(silver, high_cost_percentile),
     }
+    gold["member_months"] = build_member_months(silver)
+    gold["pmpm_summary"] = build_pmpm_summary(silver, gold["member_months"])
+    gold["patient_spending_concentration"] = build_patient_spending_concentration(silver, gold["member_months"])
+    gold["provider_population_summary"] = build_provider_population_summary(silver)
     gold["fhir_data_quality_summary"] = build_fhir_data_quality_summary(bronze, silver, quality_results)
     return gold
 
@@ -403,6 +584,10 @@ def write_gold_csv_artifacts(gold: dict[str, DataFrame], output_root: str | Path
         "financial_component_summary": "fhir_financial_component_summary.csv",
         "high_cost_claims": "fhir_high_cost_claims.csv",
         "fhir_data_quality_summary": "fhir_data_quality_summary.csv",
+        "member_months": "fhir_member_months.csv",
+        "pmpm_summary": "fhir_pmpm_summary.csv",
+        "patient_spending_concentration": "fhir_patient_spending_concentration.csv",
+        "provider_population_summary": "fhir_provider_population_summary.csv",
     }
     for table_name, filename in names.items():
         tmp_dir = tables_dir / f"{filename}.tmp"

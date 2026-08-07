@@ -1,12 +1,18 @@
 {
+  "beneficiary_count": 36,
   "claim_line_count": 216,
   "claim_types": {
     "CARRIER": 36,
     "OUTPATIENT": 18,
     "PDE": 108
   },
-  "eob_count": 162,
-  "financial_component_count": 19,
+  "coverage_resource_count": 144,
+  "diagnosis_count": 72,
+  "documentation_fixture_resource_count": 54,
+  "duplicate_resource_count": 0,
+  "eob_resource_count": 162,
+  "external_synthetic_resource_count": 0,
+  "extraction_failures": 0,
   "financial_record_count": 1368,
   "gold_table_counts": {
     "claim_type_summary": 3,
@@ -22,15 +28,17 @@
     "provider_reimbursement": 181,
     "service_cost_summary": 7
   },
-  "high_cost_claim_count": 10,
+  "official_cms_resource_count": 288,
+  "patient_resource_count": 36,
+  "provenance_summary": {
+    "documentation_based_fixture": 54,
+    "official_cms_synthetic": 288
+  },
   "provider_count": 198,
-  "resource_count": 342,
   "service_code_systems": {
     "http://hl7.org/fhir/sid/ndc": 108,
     "https://bluebutton.cms.gov/resources/codesystem/hcpcs": 108
   },
   "service_date_max": "2025-05-08",
-  "service_date_min": "2015-10-18",
-  "unique_service_codes": 7,
-  "unsupported_financial_code_count": 18
+  "service_date_min": "2015-10-18"
 }

@@ -8,11 +8,14 @@ import sys
 from pathlib import Path
 
 from pyspark.sql import DataFrame, SparkSession
+from pyspark.sql import Window
 from pyspark.sql import functions as F
 
 
 def create_spark_session(app_name: str = "healthcare-fhir-pipeline", enable_delta: bool = False) -> SparkSession:
     """Create a local/Databricks-compatible Spark session."""
+    os.environ.setdefault("SPARK_LOCAL_IP", "127.0.0.1")
+    os.environ.setdefault("SPARK_LOCAL_HOSTNAME", "localhost")
     os.environ.setdefault("PYSPARK_PYTHON", sys.executable)
     os.environ.setdefault("PYSPARK_DRIVER_PYTHON", sys.executable)
     builder = (
@@ -20,6 +23,8 @@ def create_spark_session(app_name: str = "healthcare-fhir-pipeline", enable_delt
         .master("local[2]")
         .config("spark.sql.shuffle.partitions", "4")
         .config("spark.ui.enabled", "false")
+        .config("spark.driver.bindAddress", "127.0.0.1")
+        .config("spark.driver.host", "127.0.0.1")
     )
     if enable_delta:
         builder = (
@@ -85,6 +90,7 @@ def read_bronze_resources(
         .otherwise(F.lit(None).cast("string"))
         .alias("validation_error"),
     )
+    individual = _with_provenance_columns(individual)
 
     if "entry" not in raw.columns:
         return individual
@@ -126,8 +132,44 @@ def read_bronze_resources(
         .otherwise(F.lit(None).cast("string"))
         .alias("validation_error"),
     )
+    bundle_resources = _with_provenance_columns(bundle_resources)
 
     return individual.unionByName(bundle_resources)
+
+
+def _tag_value(raw_json_col: str, system: str) -> F.Column:
+    return F.expr(
+        f"element_at(transform(filter(from_json(get_json_object({raw_json_col}, '$.meta.tag'), "
+        f"'array<struct<system:string,code:string,display:string>>'), x -> x.system = '{system}'), x -> x.code), 1)"
+    )
+
+
+def _with_provenance_columns(df: DataFrame) -> DataFrame:
+    classification_system = "https://example.org/healthcare-claims/provenance-classification"
+    dataset_system = "https://example.org/healthcare-claims/source-dataset"
+    alias_system = "https://example.org/healthcare-claims/beneficiary-alias"
+    return (
+        df.withColumn("provenance_classification", _tag_value("raw_json", classification_system))
+        .withColumn("source_dataset", _tag_value("raw_json", dataset_system))
+        .withColumn("beneficiary_alias", _tag_value("raw_json", alias_system))
+        .withColumn("source_type", F.col("provenance_classification"))
+        .withColumn("acquisition_batch", F.coalesce(F.col("ingestion_run_id"), F.lit("unknown")))
+        .withColumn("original_resource_id", F.col("resource_id"))
+    )
+
+
+def deduplicate_bronze_resources(bronze: DataFrame) -> DataFrame:
+    """Return one valid row per source/resource identity plus all invalid rows.
+
+    The shuffle is intentional: idempotent ingestion needs a deterministic
+    resource identity comparison across input batches.
+    """
+    valid = bronze.where(F.col("valid_resource"))
+    invalid = bronze.where(~F.col("valid_resource"))
+    key_cols = ["source_system", "source_dataset", "resource_type", "resource_id"]
+    window = Window.partitionBy(*key_cols).orderBy(F.col("ingested_at").asc_nulls_last(), F.col("source_file").asc_nulls_last())
+    deduped_valid = valid.withColumn("_resource_rank", F.row_number().over(window)).where(F.col("_resource_rank") == 1).drop("_resource_rank")
+    return deduped_valid.unionByName(invalid)
 
 
 def build_ingestion_audit(bronze: DataFrame) -> DataFrame:
@@ -154,6 +196,26 @@ def build_ingestion_audit(bronze: DataFrame) -> DataFrame:
         F.max("ingested_at").alias("completed_at"),
     )
     return metrics.withColumn("duplicate_resource_count", F.lit(duplicate_count).cast("long"))
+
+
+def build_incremental_ingestion_audit(discovered: DataFrame, inserted: DataFrame) -> DataFrame:
+    """Build append/idempotency metrics for a discovered vs inserted Bronze batch."""
+    audit = build_ingestion_audit(discovered)
+    inserted_count = inserted.count()
+    discovered_count = discovered.count()
+    return (
+        audit.withColumn("resources_discovered", F.lit(discovered_count).cast("long"))
+        .withColumn("resources_inserted", F.lit(inserted_count).cast("long"))
+        .withColumn("resources_skipped_as_duplicates", F.lit(discovered_count - inserted_count).cast("long"))
+        .withColumn(
+            "official_cms_resource_count",
+            F.lit(discovered.where(F.col("provenance_classification") == "official_cms_synthetic").count()).cast("long"),
+        )
+        .withColumn(
+            "documentation_fixture_resource_count",
+            F.lit(discovered.where(F.col("provenance_classification") == "documentation_based_fixture").count()).cast("long"),
+        )
+    )
 
 
 def write_dataframe(df: DataFrame, path: str | Path, *, output_format: str = "parquet") -> None:

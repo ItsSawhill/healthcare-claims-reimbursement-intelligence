@@ -33,3 +33,5 @@ databricks/.databrickscfg
 _temporary/
 **/_temporary/
 **/.spark-staging/
+outputs/fhir_spark/
+outputs/fhir_spark_population/

@@ -1,20 +1,20 @@
 claim_type_code,analytical_category,adjudication_code,adjudication_display,record_count,claim_count,claim_line_count,total_amount,avg_amount,median_amount,min_amount,max_amount
-CARRIER,deductible_amount,CLM_LINE_MDCR_DDCTBL_AMT,Cash Deductible Amount,1,1,1,0.0,0.0,0.0,0.0,0.0
-CARRIER,provider_paid_amount,CLM_LINE_PRVDR_PMT_AMT,Line Provider Payment Amount,2,1,2,112.0,56.0,36.0,36.0,76.0
-PDE,part_d_low_income_subsidy,https://bluebutton.cms.gov/resources/variables/lics_amt,Amount paid for the PDE by Part D low income subsidy,10,10,10,10.0,1.0,0.0,0.0,10.0
-CARRIER,noncovered_amount,CLM_LINE_NCVRD_CHRG_AMT,Non-Covered Charge Amount,1,1,1,0.0,0.0,0.0,0.0,0.0
-OUTPATIENT,covered_paid_amount,CLM_LINE_CVRD_PD_AMT,Payment Amount,1,1,1,118.0,118.0,118.0,118.0,118.0
-OUTPATIENT,unknown,LOCAL_UNKNOWN_FINANCIAL_CODE,Synthetic unknown financial code,1,1,1,1.23,1.23,1.23,1.23,1.23
-PDE,part_d_other_troop,https://bluebutton.cms.gov/resources/variables/othr_troop_amt,Other True Out-of-Pocket (TrOOP) Amount,10,10,10,0.0,0.0,0.0,0.0,0.0
-PDE,part_d_patient_liability_reduction_other,https://bluebutton.cms.gov/resources/variables/plro_amt,Reduction in patient liability due to payments by other payers (PLRO),10,10,10,0.0,0.0,0.0,0.0,0.0
-PDE,part_d_patient_paid_amount,https://bluebutton.cms.gov/resources/variables/ptnt_pay_amt,Amount Paid by Patient,10,10,10,70.0,7.0,0.0,0.0,20.0
-PDE,part_d_plan_paid_amount,https://bluebutton.cms.gov/resources/variables/cvrd_d_plan_pd_amt,Amount paid by Part D plan for the PDE (drug is covered by Part D),10,10,10,140.0,14.0,0.0,0.0,80.0
-CARRIER,beneficiary_paid_amount,CLM_LINE_BENE_PMT_AMT,Line Paid By Beneficiary Amount,1,1,1,19.0,19.0,19.0,19.0,19.0
-OUTPATIENT,coinsurance_amount,CLM_LINE_MDCR_COINSRNC_AMT,Coinsurance Amount,1,1,1,29.5,29.5,29.5,29.5,29.5
-PDE,part_d_gross_drug_cost_below_oop,https://bluebutton.cms.gov/resources/variables/gdc_blw_oopt_amt,Gross Drug Cost Below Part D Out-of-Pocket Threshold (GDCB),10,10,10,200.0,20.0,10.0,0.0,100.0
-CARRIER,allowed_amount,CLM_LINE_ALOWD_CHRG_AMT,Line Allowed Charge Amount,2,1,2,140.0,70.0,45.0,45.0,95.0
-CARRIER,submitted_amount,CLM_LINE_SBMT_CHRG_AMT,Line Submitted Charge Amount,2,1,2,255.0,127.5,80.0,80.0,175.0
-OUTPATIENT,submitted_amount,CLM_LINE_SBMT_CHRG_AMT,Line Submitted Charge Amount,1,1,1,220.0,220.0,220.0,220.0,220.0
-PDE,part_d_gap_discount,https://bluebutton.cms.gov/resources/variables/rptd_gap_dscnt_num,Gap Discount Amount,10,10,10,0.0,0.0,0.0,0.0,0.0
-PDE,part_d_gross_drug_cost_above_oop,https://bluebutton.cms.gov/resources/variables/gdc_abv_oopt_amt,Gross Drug Cost Above Part D Out-of-Pocket Threshold (GDCA),10,10,10,10.0,1.0,0.0,0.0,10.0
-PDE,part_d_total_drug_cost,https://bluebutton.cms.gov/resources/variables/tot_rx_cst_amt,Total drug cost (Part D),10,10,10,210.0,21.0,10.0,0.0,100.0
+CARRIER,deductible_amount,CLM_LINE_MDCR_DDCTBL_AMT,Cash Deductible Amount,36,36,36,0.0,0.0,0.0,0.0,0.0
+CARRIER,provider_paid_amount,CLM_LINE_PRVDR_PMT_AMT,Line Provider Payment Amount,72,36,72,5688.4800000000005,79.00666666666667,66.88,27.0,155.8
+PDE,part_d_low_income_subsidy,https://bluebutton.cms.gov/resources/variables/lics_amt,Amount paid for the PDE by Part D low income subsidy,108,108,108,0.0,0.0,0.0,0.0,0.0
+CARRIER,noncovered_amount,CLM_LINE_NCVRD_CHRG_AMT,Non-Covered Charge Amount,36,36,36,0.0,0.0,0.0,0.0,0.0
+OUTPATIENT,covered_paid_amount,CLM_LINE_CVRD_PD_AMT,Payment Amount,18,18,18,2988.9399999999996,166.0522222222222,165.2,88.5,241.9
+OUTPATIENT,unknown,LOCAL_UNKNOWN_FINANCIAL_CODE,Synthetic unknown financial code,18,18,18,31.119999999999994,1.7288888888888885,1.72,0.92,2.52
+PDE,part_d_other_troop,https://bluebutton.cms.gov/resources/variables/othr_troop_amt,Other True Out-of-Pocket (TrOOP) Amount,108,108,108,0.0,0.0,0.0,0.0,0.0
+PDE,part_d_patient_liability_reduction_other,https://bluebutton.cms.gov/resources/variables/plro_amt,Reduction in patient liability due to payments by other payers (PLRO),108,108,108,0.0,0.0,0.0,0.0,0.0
+PDE,part_d_patient_paid_amount,https://bluebutton.cms.gov/resources/variables/ptnt_pay_amt,Amount Paid by Patient,108,108,108,504.0,4.666666666666667,0.0,0.0,20.5
+PDE,part_d_plan_paid_amount,https://bluebutton.cms.gov/resources/variables/cvrd_d_plan_pd_amt,Amount paid by Part D plan for the PDE (drug is covered by Part D),108,108,108,500.1,4.6305555555555555,0.0,0.0,20.5
+CARRIER,beneficiary_paid_amount,CLM_LINE_BENE_PMT_AMT,Line Paid By Beneficiary Amount,36,36,36,965.0100000000002,26.80583333333334,26.6,14.25,38.95
+OUTPATIENT,coinsurance_amount,CLM_LINE_MDCR_COINSRNC_AMT,Coinsurance Amount,18,18,18,747.2199999999999,41.51222222222222,41.3,22.12,60.47
+PDE,part_d_gross_drug_cost_below_oop,https://bluebutton.cms.gov/resources/variables/gdc_blw_oopt_amt,Gross Drug Cost Below Part D Out-of-Pocket Threshold (GDCB),108,108,108,1008.0,9.333333333333334,0.0,0.0,41.0
+CARRIER,allowed_amount,CLM_LINE_ALOWD_CHRG_AMT,Line Allowed Charge Amount,72,36,72,7110.6,98.75833333333334,83.6,33.75,194.75
+CARRIER,submitted_amount,CLM_LINE_SBMT_CHRG_AMT,Line Submitted Charge Amount,72,36,72,12951.449999999999,179.88125,153.6,60.0,358.75
+OUTPATIENT,submitted_amount,CLM_LINE_SBMT_CHRG_AMT,Line Submitted Charge Amount,18,18,18,5572.599999999999,309.58888888888885,308.0,165.0,451.0
+PDE,part_d_gap_discount,https://bluebutton.cms.gov/resources/variables/rptd_gap_dscnt_num,Gap Discount Amount,108,108,108,0.0,0.0,0.0,0.0,0.0
+PDE,part_d_gross_drug_cost_above_oop,https://bluebutton.cms.gov/resources/variables/gdc_abv_oopt_amt,Gross Drug Cost Above Part D Out-of-Pocket Threshold (GDCA),108,108,108,500.1,4.6305555555555555,0.0,0.0,20.5
+PDE,part_d_total_drug_cost,https://bluebutton.cms.gov/resources/variables/tot_rx_cst_amt,Total drug cost (Part D),108,108,108,1508.1,13.963888888888889,14.0,0.0,41.0

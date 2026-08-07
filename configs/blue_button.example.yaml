@@ -1,0 +1,8 @@
+# Example only. Do not put real tokens or client secrets in this file.
+base_url: "https://sandbox.bluebutton.cms.gov/v2/fhir"
+access_token_env: "BLUE_BUTTON_ACCESS_TOKEN"
+beneficiary_ids:
+  - "-20140000010000"
+output_dir: "data/raw/fhir/api"
+manifest_path: "outputs/metrics/blue_button_extraction_manifest.json"
+mode: "fixture"
