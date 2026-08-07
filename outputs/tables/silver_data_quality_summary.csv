@@ -1,0 +1,15 @@
+check_name,table_name,record_count,failure_count,failure_percentage,severity,details
+duplicate_patient_ids,patient,1,0,0.0,structural_error,Patient IDs should be unique in Silver patient.
+duplicate_coverage_ids,coverage,4,0,0.0,structural_error,Coverage IDs should be unique in Silver coverage.
+duplicate_eob_ids,claim_header,12,0,0.0,structural_error,EOB IDs should be unique in Silver claim_header.
+missing_patient_references,claim_header,12,0,0.0,structural_error,Every EOB should retain a patient reference.
+missing_claim_types,claim_header,12,0,0.0,structural_error,EOB type.coding should provide a claim type.
+invalid_service_periods,claim_header,12,0,0.0,structural_error,Service end date should not precede service start date.
+missing_service_codes,claim_line,14,0,0.0,completeness_warning,Line service or product code is missing.
+negative_financial_values,claim_line_financial,103,0,0.0,structural_error,Financial adjudication amounts should not be negative.
+claim_line_without_matching_eob,claim_line,14,0,0.0,structural_error,Every claim line should link to a claim_header row.
+diagnosis_without_matching_eob,claim_diagnosis,3,0,0.0,structural_error,Every diagnosis row should link to a claim_header row.
+unknown_adjudication_codes,claim_line_financial,103,1,0.009708737864077669,unsupported_mapping,Unsupported adjudication codes remain auditable in claim_line_financial.
+claim_lines_without_any_financial_data,claim_line,14,1,0.07142857142857142,completeness_warning,Some FHIR line items may omit adjudication arrays.
+missing_provider_attribution,claim_header,12,0,0.0,completeness_warning,"Provider attribution uses careTeam first, then EOB provider fallback."
+unsupported_claim_types,claim_header,12,0,0.0,unsupported_mapping,"Only observed PDE, CARRIER, and OUTPATIENT claim profiles are supported in Phase 2."

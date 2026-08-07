@@ -1,0 +1,14 @@
+claim_type_code,service_code_system,service_code,service_display,service_count,claim_count,patient_count,provider_count,total_submitted_amount,total_allowed_amount,total_provider_paid_amount,total_covered_paid_amount,total_beneficiary_paid_amount,avg_submitted_amount,avg_allowed_amount,avg_provider_paid_amount,avg_covered_paid_amount,total_part_d_plan_paid,total_part_d_patient_paid,total_drug_cost
+OUTPATIENT,https://bluebutton.cms.gov/resources/codesystem/hcpcs,71046,Chest x-ray,1,1,1,1,220.0,0.0,0.0,118.0,0.0,220.0,,,118.0,0.0,0.0,0.0
+CARRIER,https://bluebutton.cms.gov/resources/codesystem/hcpcs,99213,Office/outpatient visit est,1,1,1,2,175.0,95.0,76.0,0.0,19.0,175.0,95.0,76.0,,0.0,0.0,0.0
+CARRIER,https://bluebutton.cms.gov/resources/codesystem/hcpcs,93000,,1,1,1,2,80.0,45.0,36.0,0.0,0.0,80.0,45.0,36.0,,0.0,0.0,0.0
+PDE,http://hl7.org/fhir/sid/ndc,60505257908,ATORVASTATIN CALCIUM - ATORVASTATIN CALCIUM PROPYLENE GLYCOL SOLVATE,1,1,1,1,0.0,0.0,0.0,0.0,0.0,,,,,10.0,0.0,10.0
+PDE,http://hl7.org/fhir/sid/ndc,68180047903,SIMVASTATIN - SIMVASTATIN,1,1,1,1,0.0,0.0,0.0,0.0,0.0,,,,,0.0,10.0,20.0
+PDE,http://hl7.org/fhir/sid/ndc,55111012290,Atorvastatin Calcium - ATORVASTATIN CALCIUM TRIHYDRATE,1,1,1,1,0.0,0.0,0.0,0.0,0.0,,,,,20.0,20.0,20.0
+PDE,http://hl7.org/fhir/sid/ndc,67877022305,Gabapentin - GABAPENTIN,1,1,1,1,0.0,0.0,0.0,0.0,0.0,,,,,0.0,0.0,0.0
+PDE,http://hl7.org/fhir/sid/ndc,60505257909,ATORVASTATIN CALCIUM - ATORVASTATIN CALCIUM PROPYLENE GLYCOL SOLVATE,1,1,1,1,0.0,0.0,0.0,0.0,0.0,,,,,0.0,0.0,10.0
+OUTPATIENT,https://bluebutton.cms.gov/resources/codesystem/hcpcs,80053,,1,1,1,1,0.0,0.0,0.0,0.0,0.0,,,,,0.0,0.0,0.0
+PDE,http://hl7.org/fhir/sid/ndc,57237001930,Duloxetine - DULOXETINE HYDROCHLORIDE,1,1,1,1,0.0,0.0,0.0,0.0,0.0,,,,,0.0,10.0,10.0
+PDE,http://hl7.org/fhir/sid/ndc,00378395277,Atorvastatin Calcium - ATORVASTATIN CALCIUM TRIHYDRATE,2,2,1,2,0.0,0.0,0.0,0.0,0.0,,,,,110.0,30.0,140.0
+PDE,http://hl7.org/fhir/sid/ndc,59762154003,,1,1,1,1,0.0,0.0,0.0,0.0,0.0,,,,,0.0,0.0,0.0
+PDE,http://hl7.org/fhir/sid/ndc,16252060144,,1,1,1,1,0.0,0.0,0.0,0.0,0.0,,,,,0.0,0.0,0.0

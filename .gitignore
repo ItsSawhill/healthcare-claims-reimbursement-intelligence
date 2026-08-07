@@ -4,6 +4,7 @@ __pycache__/
 .venv/
 venv/
 .env
+*.env
 .ipynb_checkpoints/
 *.tmp
 *.temp
@@ -18,3 +19,17 @@ data/raw/*.csv
 data/raw/*.zip
 data/raw/*.parquet
 !data/raw/README.md
+spark-warehouse/
+metastore_db/
+derby.log
+.databricks/
+databricks/.databrickscfg
+.databrickscfg
+.databricks-connect
+*.dbc
+*.local
+*.pid
+*.crc
+_temporary/
+**/_temporary/
+**/.spark-staging/

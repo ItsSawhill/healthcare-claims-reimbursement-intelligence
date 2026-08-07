@@ -1,0 +1,4 @@
+claim_type_code,claim_count,claim_line_count,unique_patient_count,unique_provider_count,service_date_min,service_date_max,total_submitted_amount,total_allowed_amount,total_provider_paid_amount,total_covered_paid_amount,total_beneficiary_paid_amount,total_deductible_amount,total_coinsurance_amount,total_noncovered_amount,avg_submitted_per_line,avg_allowed_per_line,avg_provider_paid_per_line,avg_covered_paid_per_line,financial_record_count,total_part_d_plan_paid,total_part_d_patient_paid,total_drug_cost
+PDE,10,10,1,1,2015-06-01,2016-10-01,0.0,0.0,0.0,0.0,0.0,0.0,0.0,0.0,,,,,90,140.0,70.0,210.0
+OUTPATIENT,1,2,1,1,2024-04-02,2024-04-03,220.0,0.0,0.0,118.0,0.0,0.0,29.5,0.0,220.0,,,118.0,4,0.0,0.0,0.0
+CARRIER,1,2,1,2,2024-03-12,2024-03-12,255.0,140.0,112.0,0.0,19.0,0.0,0.0,0.0,127.5,70.0,56.0,,9,0.0,0.0,0.0

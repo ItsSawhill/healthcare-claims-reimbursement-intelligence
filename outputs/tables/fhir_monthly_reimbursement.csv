@@ -1,0 +1,9 @@
+service_month,claim_type_code,claim_count,claim_line_count,unique_service_count,total_submitted_amount,total_allowed_amount,total_provider_paid_amount,total_covered_paid_amount,total_beneficiary_paid_amount,total_part_d_plan_paid,total_part_d_patient_paid
+2015-06-01,PDE,1,1,1,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+2016-05-01,PDE,3,3,3,0.0,0.0,0.0,0.0,0.0,100.0,40.0
+2015-10-01,PDE,2,2,2,0.0,0.0,0.0,0.0,0.0,30.0,10.0
+2016-01-01,PDE,1,1,1,0.0,0.0,0.0,0.0,0.0,0.0,0.0
+2016-10-01,PDE,1,1,1,0.0,0.0,0.0,0.0,0.0,10.0,0.0
+2016-07-01,PDE,2,2,2,0.0,0.0,0.0,0.0,0.0,0.0,20.0
+2024-03-01,CARRIER,1,2,2,255.0,140.0,112.0,0.0,19.0,0.0,0.0
+2024-04-01,OUTPATIENT,1,2,2,220.0,0.0,0.0,118.0,0.0,0.0,0.0

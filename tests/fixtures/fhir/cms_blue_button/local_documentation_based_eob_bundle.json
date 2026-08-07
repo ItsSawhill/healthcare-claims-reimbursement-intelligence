@@ -1,0 +1,496 @@
+{
+  "resourceType": "Bundle",
+  "id": "local-documentation-based-eob-bundle",
+  "type": "collection",
+  "entry": [
+    {
+      "fullUrl": "urn:uuid:eob-carrier-synthetic-1",
+      "resource": {
+        "resourceType": "ExplanationOfBenefit",
+        "id": "carrier--local-synthetic-0001",
+        "meta": {
+          "profile": [
+            "http://hl7.org/fhir/us/carin-bb/StructureDefinition/C4BB-ExplanationOfBenefit-Professional-NonClinician"
+          ]
+        },
+        "status": "active",
+        "type": {
+          "coding": [
+            {
+              "system": "https://bluebutton.cms.gov/resources/codesystem/eob-type",
+              "code": "CARRIER"
+            },
+            {
+              "system": "https://bluebutton.cms.gov/resources/variables/nch_clm_type_cd",
+              "code": "71",
+              "display": "Local carrier claim"
+            },
+            {
+              "system": "http://terminology.hl7.org/CodeSystem/claim-type",
+              "code": "professional",
+              "display": "Professional"
+            }
+          ]
+        },
+        "patient": {
+          "reference": "Patient/-20140000010000"
+        },
+        "billablePeriod": {
+          "start": "2024-03-12",
+          "end": "2024-03-12"
+        },
+        "provider": {
+          "identifier": {
+            "system": "http://hl7.org/fhir/sid/us-npi",
+            "value": "1999999991"
+          }
+        },
+        "careTeam": [
+          {
+            "sequence": 1,
+            "provider": {
+              "identifier": {
+                "system": "http://hl7.org/fhir/sid/us-npi",
+                "value": "1999999991"
+              }
+            },
+            "role": {
+              "coding": [
+                {
+                  "system": "http://hl7.org/fhir/us/carin-bb/CodeSystem/C4BBClaimCareTeamRole",
+                  "code": "performing",
+                  "display": "Performing provider"
+                }
+              ]
+            }
+          },
+          {
+            "sequence": 2,
+            "provider": {
+              "identifier": {
+                "system": "http://hl7.org/fhir/sid/us-npi",
+                "value": "1888888882"
+              }
+            },
+            "role": {
+              "coding": [
+                {
+                  "system": "http://hl7.org/fhir/us/carin-bb/CodeSystem/C4BBClaimCareTeamRole",
+                  "code": "referring",
+                  "display": "Referring provider"
+                }
+              ]
+            }
+          }
+        ],
+        "diagnosis": [
+          {
+            "sequence": 1,
+            "diagnosisCodeableConcept": {
+              "coding": [
+                {
+                  "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                  "code": "I10",
+                  "display": "Essential hypertension"
+                }
+              ]
+            },
+            "type": [
+              {
+                "coding": [
+                  {
+                    "system": "http://terminology.hl7.org/CodeSystem/ex-diagnosistype",
+                    "code": "principal"
+                  }
+                ]
+              }
+            ]
+          }
+        ],
+        "insurance": [
+          {
+            "focal": true,
+            "coverage": {
+              "reference": "Coverage/part-b--20140000010000"
+            }
+          }
+        ],
+        "item": [
+          {
+            "sequence": 1,
+            "careTeamSequence": [
+              1,
+              2
+            ],
+            "diagnosisSequence": [
+              1
+            ],
+            "service": {
+              "coding": [
+                {
+                  "system": "https://bluebutton.cms.gov/resources/codesystem/hcpcs",
+                  "code": "99213",
+                  "display": "Office/outpatient visit est",
+                  "version": "2024"
+                },
+                {
+                  "system": "http://www.ama-assn.org/go/cpt",
+                  "code": "99213",
+                  "display": "Office/outpatient visit est"
+                }
+              ]
+            },
+            "servicedDate": "2024-03-12",
+            "adjudication": [
+              {
+                "category": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/us/carin-bb/CodeSystem/C4BBAdjudication",
+                      "code": "submitted",
+                      "display": "Submitted Amount"
+                    },
+                    {
+                      "system": "https://bluebutton.cms.gov/fhir/CodeSystem/Adjudication",
+                      "code": "CLM_LINE_SBMT_CHRG_AMT",
+                      "display": "Line Submitted Charge Amount"
+                    }
+                  ]
+                },
+                "amount": {
+                  "value": 175.0,
+                  "currency": "USD"
+                }
+              },
+              {
+                "category": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/us/carin-bb/CodeSystem/C4BBAdjudication",
+                      "code": "eligible",
+                      "display": "Eligible Amount"
+                    },
+                    {
+                      "system": "https://bluebutton.cms.gov/fhir/CodeSystem/Adjudication",
+                      "code": "CLM_LINE_ALOWD_CHRG_AMT",
+                      "display": "Line Allowed Charge Amount"
+                    }
+                  ]
+                },
+                "amount": {
+                  "value": 95.0,
+                  "currency": "USD"
+                }
+              },
+              {
+                "category": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/us/carin-bb/CodeSystem/C4BBAdjudication",
+                      "code": "benefit",
+                      "display": "Benefit Amount"
+                    },
+                    {
+                      "system": "https://bluebutton.cms.gov/fhir/CodeSystem/Adjudication",
+                      "code": "CLM_LINE_PRVDR_PMT_AMT",
+                      "display": "Line Provider Payment Amount"
+                    }
+                  ]
+                },
+                "amount": {
+                  "value": 76.0,
+                  "currency": "USD"
+                }
+              },
+              {
+                "category": {
+                  "coding": [
+                    {
+                      "system": "http://hl7.org/fhir/us/carin-bb/CodeSystem/C4BBAdjudication",
+                      "code": "paidbypatient",
+                      "display": "Paid by patient"
+                    },
+                    {
+                      "system": "https://bluebutton.cms.gov/fhir/CodeSystem/Adjudication",
+                      "code": "CLM_LINE_BENE_PMT_AMT",
+                      "display": "Line Paid By Beneficiary Amount"
+                    }
+                  ]
+                },
+                "amount": {
+                  "value": 19.0,
+                  "currency": "USD"
+                }
+              },
+              {
+                "category": {
+                  "coding": [
+                    {
+                      "system": "https://bluebutton.cms.gov/fhir/CodeSystem/Adjudication",
+                      "code": "CLM_LINE_MDCR_DDCTBL_AMT",
+                      "display": "Cash Deductible Amount"
+                    }
+                  ]
+                },
+                "amount": {
+                  "value": 0.0,
+                  "currency": "USD"
+                }
+              }
+            ]
+          },
+          {
+            "sequence": 2,
+            "careTeamSequence": [
+              1
+            ],
+            "diagnosisSequence": [
+              1
+            ],
+            "service": {
+              "coding": [
+                {
+                  "system": "https://bluebutton.cms.gov/resources/codesystem/hcpcs",
+                  "code": "93000"
+                }
+              ]
+            },
+            "servicedDate": "2024-03-12",
+            "adjudication": [
+              {
+                "category": {
+                  "coding": [
+                    {
+                      "system": "https://bluebutton.cms.gov/fhir/CodeSystem/Adjudication",
+                      "code": "CLM_LINE_SBMT_CHRG_AMT",
+                      "display": "Line Submitted Charge Amount"
+                    }
+                  ]
+                },
+                "amount": {
+                  "value": 80.0,
+                  "currency": "USD"
+                }
+              },
+              {
+                "category": {
+                  "coding": [
+                    {
+                      "system": "https://bluebutton.cms.gov/fhir/CodeSystem/Adjudication",
+                      "code": "CLM_LINE_ALOWD_CHRG_AMT",
+                      "display": "Line Allowed Charge Amount"
+                    }
+                  ]
+                },
+                "amount": {
+                  "value": 45.0,
+                  "currency": "USD"
+                }
+              },
+              {
+                "category": {
+                  "coding": [
+                    {
+                      "system": "https://bluebutton.cms.gov/fhir/CodeSystem/Adjudication",
+                      "code": "CLM_LINE_PRVDR_PMT_AMT",
+                      "display": "Line Provider Payment Amount"
+                    }
+                  ]
+                },
+                "amount": {
+                  "value": 36.0,
+                  "currency": "USD"
+                }
+              },
+              {
+                "category": {
+                  "coding": [
+                    {
+                      "system": "https://bluebutton.cms.gov/fhir/CodeSystem/Adjudication",
+                      "code": "CLM_LINE_NCVRD_CHRG_AMT",
+                      "display": "Non-Covered Charge Amount"
+                    }
+                  ]
+                },
+                "amount": {
+                  "value": 0.0,
+                  "currency": "USD"
+                }
+              }
+            ]
+          }
+        ],
+        "payment": {
+          "amount": {
+            "value": 112.0,
+            "currency": "USD"
+          }
+        }
+      }
+    },
+    {
+      "fullUrl": "urn:uuid:eob-outpatient-synthetic-1",
+      "resource": {
+        "resourceType": "ExplanationOfBenefit",
+        "id": "outpatient--local-synthetic-0001",
+        "status": "active",
+        "type": {
+          "coding": [
+            {
+              "system": "https://bluebutton.cms.gov/resources/codesystem/eob-type",
+              "code": "OUTPATIENT"
+            },
+            {
+              "system": "https://bluebutton.cms.gov/resources/variables/nch_clm_type_cd",
+              "code": "40",
+              "display": "Outpatient claim"
+            }
+          ]
+        },
+        "patient": {
+          "reference": "Patient/-20140000010000"
+        },
+        "billablePeriod": {
+          "start": "2024-04-02",
+          "end": "2024-04-03"
+        },
+        "provider": {
+          "reference": "Organization/outpatient-provider-1"
+        },
+        "diagnosis": [
+          {
+            "sequence": 1,
+            "diagnosisCodeableConcept": {
+              "coding": [
+                {
+                  "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                  "code": "E11.9",
+                  "display": "Type 2 diabetes mellitus without complications"
+                }
+              ]
+            }
+          },
+          {
+            "sequence": 2,
+            "diagnosisCodeableConcept": {
+              "coding": [
+                {
+                  "system": "http://hl7.org/fhir/sid/icd-10-cm",
+                  "code": "R07.9"
+                }
+              ]
+            }
+          }
+        ],
+        "insurance": [
+          {
+            "focal": true,
+            "coverage": {
+              "reference": "Coverage/part-b--20140000010000"
+            }
+          }
+        ],
+        "item": [
+          {
+            "sequence": 1,
+            "diagnosisSequence": [
+              1,
+              2
+            ],
+            "service": {
+              "coding": [
+                {
+                  "system": "https://bluebutton.cms.gov/resources/codesystem/hcpcs",
+                  "code": "71046",
+                  "display": "Chest x-ray",
+                  "version": "2024"
+                }
+              ]
+            },
+            "servicedPeriod": {
+              "start": "2024-04-02",
+              "end": "2024-04-03"
+            },
+            "adjudication": [
+              {
+                "category": {
+                  "coding": [
+                    {
+                      "system": "https://bluebutton.cms.gov/fhir/CodeSystem/Adjudication",
+                      "code": "CLM_LINE_SBMT_CHRG_AMT",
+                      "display": "Line Submitted Charge Amount"
+                    }
+                  ]
+                },
+                "amount": {
+                  "value": 220.0,
+                  "currency": "USD"
+                }
+              },
+              {
+                "category": {
+                  "coding": [
+                    {
+                      "system": "https://bluebutton.cms.gov/fhir/CodeSystem/Adjudication",
+                      "code": "CLM_LINE_CVRD_PD_AMT",
+                      "display": "Payment Amount"
+                    }
+                  ]
+                },
+                "amount": {
+                  "value": 118.0,
+                  "currency": "USD"
+                }
+              },
+              {
+                "category": {
+                  "coding": [
+                    {
+                      "system": "https://bluebutton.cms.gov/fhir/CodeSystem/Adjudication",
+                      "code": "CLM_LINE_MDCR_COINSRNC_AMT",
+                      "display": "Coinsurance Amount"
+                    }
+                  ]
+                },
+                "amount": {
+                  "value": 29.5,
+                  "currency": "USD"
+                }
+              },
+              {
+                "category": {
+                  "coding": [
+                    {
+                      "system": "https://example.org/local/unknown-adjudication",
+                      "code": "LOCAL_UNKNOWN_FINANCIAL_CODE",
+                      "display": "Synthetic unknown financial code"
+                    }
+                  ]
+                },
+                "amount": {
+                  "value": 1.23,
+                  "currency": "USD"
+                }
+              }
+            ]
+          },
+          {
+            "sequence": 2,
+            "diagnosisSequence": [
+              1
+            ],
+            "service": {
+              "coding": [
+                {
+                  "system": "https://bluebutton.cms.gov/resources/codesystem/hcpcs",
+                  "code": "80053"
+                }
+              ]
+            },
+            "servicedDate": "2024-04-03"
+          }
+        ]
+      }
+    }
+  ]
+}

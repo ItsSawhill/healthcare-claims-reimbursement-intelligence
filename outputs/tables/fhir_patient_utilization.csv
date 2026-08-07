@@ -1,0 +1,2 @@
+patient_id,claim_count,claim_line_count,claim_type_count,unique_service_count,service_month_count,service_date_min,service_date_max,total_submitted_amount,total_allowed_amount,total_provider_paid_amount,total_covered_paid_amount,total_beneficiary_paid_amount,unique_provider_count
+-20140000010000,12,14,3,13,8,2015-06-01,2024-04-03,475.0,140.0,112.0,118.0,19.0,4

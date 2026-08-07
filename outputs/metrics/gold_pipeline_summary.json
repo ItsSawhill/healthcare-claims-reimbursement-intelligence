@@ -1,0 +1,32 @@
+{
+  "claim_line_count": 14,
+  "claim_types": {
+    "CARRIER": 1,
+    "OUTPATIENT": 1,
+    "PDE": 10
+  },
+  "eob_count": 12,
+  "financial_component_count": 19,
+  "financial_record_count": 103,
+  "gold_table_counts": {
+    "claim_type_summary": 3,
+    "fhir_data_quality_summary": 34,
+    "financial_component_summary": 19,
+    "high_cost_claims": 12,
+    "monthly_reimbursement": 8,
+    "patient_utilization": 1,
+    "provider_reimbursement": 4,
+    "service_cost_summary": 13
+  },
+  "high_cost_claim_count": 3,
+  "provider_count": 13,
+  "resource_count": 17,
+  "service_code_systems": {
+    "http://hl7.org/fhir/sid/ndc": 10,
+    "https://bluebutton.cms.gov/resources/codesystem/hcpcs": 4
+  },
+  "service_date_max": "2024-04-03",
+  "service_date_min": "2015-06-01",
+  "unique_service_codes": 13,
+  "unsupported_financial_code_count": 1
+}

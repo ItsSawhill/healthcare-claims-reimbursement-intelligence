@@ -6,7 +6,7 @@
 ![Status](https://img.shields.io/badge/Status-Portfolio%20Ready-1f7a5c)
 ![CI](https://github.com/ItsSawhill/healthcare-claims-reimbursement-intelligence/actions/workflows/ci.yml/badge.svg)
 
-An end-to-end healthcare reimbursement analytics platform that turns synthetic claim-level data and optional CMS Medicare public benchmarks into provider risk, PMPM, reimbursement, scenario, forecast, dashboard, and executive reporting outputs.
+An end-to-end healthcare reimbursement analytics platform that turns synthetic claim-level data and optional CMS Medicare public benchmarks into provider risk, PMPM, reimbursement, scenario, forecast, dashboard, and executive reporting outputs. The repository also includes a FHIR/Databricks-compatible extension that processes CMS Blue Button-style Patient, Coverage, and ExplanationOfBenefit resources through Bronze, Silver, and Gold Spark analytics layers.
 
 **What it does**
 
@@ -15,8 +15,9 @@ An end-to-end healthcare reimbursement analytics platform that turns synthetic c
 - Scores provider financial risk and models reimbursement, utilization, and contract change scenarios.
 - Produces dashboard-ready CSVs, presentation figures, an Excel executive workbook, SQL scripts, and a Streamlit dashboard.
 - Optionally integrates CMS Medicare public provider/service data for benchmark comparison.
+- Profiles and normalizes synthetic CMS Blue Button FHIR resources with PySpark into claim-type-aware reimbursement Gold outputs and interview findings.
 
-**Tech stack:** Python, pandas, NumPy, scikit-learn, matplotlib, Streamlit, SQL, pytest, GitHub Actions, openpyxl.
+**Tech stack:** Python, pandas, NumPy, scikit-learn, matplotlib, Streamlit, SQL, pytest, GitHub Actions, openpyxl, Apache Spark / PySpark, Databricks-compatible Delta patterns.
 
 ## Key Features
 
@@ -31,6 +32,7 @@ An end-to-end healthcare reimbursement analytics platform that turns synthetic c
 | Streamlit Dashboard | Provides interactive review for executives and analysts. | `app.py` |
 | Executive Reporting | Packages insights into Markdown and Excel deliverables. | `executive_summary.md`, `executive_workbook.xlsx` |
 | Optional CMS Medicare Benchmark Integration | Adds real public Medicare provider/service benchmark context when a local CMS file is supplied. | `cms_provider_service_benchmarks.csv` |
+| FHIR Bronze/Silver/Gold Analytics | Normalizes CMS Blue Button-style Patient, Coverage, and EOB resources with Spark while preserving claim-type-specific payment semantics. | `fhir_*` CSVs, `gold_pipeline_summary.json`, `fhir_interview_findings.md` |
 
 ## Table of Contents
 
@@ -54,6 +56,12 @@ An end-to-end healthcare reimbursement analytics platform that turns synthetic c
 pip install -r requirements.txt
 python src/run_pipeline.py
 streamlit run app.py
+```
+
+Run the FHIR Spark Gold pipeline locally against included synthetic fixtures:
+
+```bash
+python databricks/02_build_fhir_gold.py --output-format parquet
 ```
 
 Run tests:
@@ -155,6 +163,16 @@ Physician Fee Schedule readiness is documented for future benchmark expansion:
 
 See [docs/real_cms_data_integration.md](docs/real_cms_data_integration.md) and [docs/cms_benchmark_integration.md](docs/cms_benchmark_integration.md).
 
+**FHIR and Databricks-compatible layer**
+
+- Uses synthetic/public CMS Blue Button-style FHIR examples only; no real beneficiary data is included.
+- Loads Patient, Coverage, and ExplanationOfBenefit resources into an auditable Bronze representation.
+- Normalizes Silver patient, coverage, claim header, claim line, diagnosis, provider, financial component, and quality tables with PySpark.
+- Builds Gold reimbursement analytics that keep Carrier provider-paid, Outpatient covered-paid, and PDE Part D payment/drug-cost concepts separate.
+- Writes portfolio artifacts such as `outputs/metrics/gold_pipeline_summary.json`, `outputs/tables/fhir_claim_type_summary.csv`, and `reports/fhir_interview_findings.md`.
+
+Setup details are in [docs/databricks_setup.md](docs/databricks_setup.md).
+
 ## Analytics Modules
 
 **Core KPIs**
@@ -253,6 +271,7 @@ The `sql/` folder mirrors key pipeline logic for warehouse-style reporting:
 - reimbursement trends
 - denial analysis
 - utilization trends
+- FHIR Gold analytics under `sql/fhir/`
 
 ## Testing and CI
 

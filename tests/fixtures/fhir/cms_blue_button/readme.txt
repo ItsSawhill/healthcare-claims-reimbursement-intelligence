@@ -1,0 +1,1 @@
+This download contains examples of the three primary FHIR resources supplied in the Blue Button API for a single beneficiary:  Patient, Coverage and Explanation of Benefit (eob).  Because there are typically multiple coverage records and claims for a given beneficiary, the coverage and eob examples are provided in a FHIR bundle.

@@ -1,0 +1,5 @@
+provider_identifier,provider_reference,provider_role_code,provider_role_display,provider_source,claim_type_code,claim_count,claim_line_count,patient_count,service_count,total_submitted_amount,total_allowed_amount,total_provider_paid_amount,total_covered_paid_amount,avg_provider_paid_amount,avg_covered_paid_amount
+999999999999999,,prescribing,Prescribing provider,careTeam.provider,PDE,10,10,1,9,0.0,0.0,0.0,0.0,,
+1999999991,,performing,Performing provider,careTeam.provider,CARRIER,1,2,1,2,0.0,0.0,0.0,0.0,,
+1888888882,,referring,Referring provider,careTeam.provider,CARRIER,1,2,1,2,0.0,0.0,0.0,0.0,,
+,Organization/outpatient-provider-1,,,ExplanationOfBenefit.provider.reference,OUTPATIENT,1,2,1,2,220.0,0.0,0.0,118.0,,118.0

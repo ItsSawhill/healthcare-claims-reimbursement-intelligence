@@ -1,0 +1,43 @@
+eob_type,field,resource_count,populated_count,populated_percentage
+CARRIER,patient reference,1,1,1.0
+CARRIER,billable period start,1,1,1.0
+CARRIER,billable period end,1,1,1.0
+CARRIER,provider,1,1,1.0
+CARRIER,diagnosis,1,1,1.0
+CARRIER,items,1,1,1.0
+CARRIER,HCPCS/service,1,1,1.0
+CARRIER,submitted amount,1,1,1.0
+CARRIER,allowed amount,1,1,1.0
+CARRIER,provider paid amount,1,1,1.0
+CARRIER,covered paid amount,1,0,0.0
+CARRIER,beneficiary paid amount,1,1,1.0
+CARRIER,payment,1,1,1.0
+CARRIER,insurance/coverage,1,1,1.0
+OUTPATIENT,patient reference,1,1,1.0
+OUTPATIENT,billable period start,1,1,1.0
+OUTPATIENT,billable period end,1,1,1.0
+OUTPATIENT,provider,1,1,1.0
+OUTPATIENT,diagnosis,1,1,1.0
+OUTPATIENT,items,1,1,1.0
+OUTPATIENT,HCPCS/service,1,1,1.0
+OUTPATIENT,submitted amount,1,1,1.0
+OUTPATIENT,allowed amount,1,0,0.0
+OUTPATIENT,provider paid amount,1,0,0.0
+OUTPATIENT,covered paid amount,1,1,1.0
+OUTPATIENT,beneficiary paid amount,1,0,0.0
+OUTPATIENT,payment,1,0,0.0
+OUTPATIENT,insurance/coverage,1,1,1.0
+PDE,patient reference,10,10,1.0
+PDE,billable period start,10,10,1.0
+PDE,billable period end,10,10,1.0
+PDE,provider,10,10,1.0
+PDE,diagnosis,10,0,0.0
+PDE,items,10,10,1.0
+PDE,HCPCS/service,10,10,1.0
+PDE,submitted amount,10,0,0.0
+PDE,allowed amount,10,0,0.0
+PDE,provider paid amount,10,0,0.0
+PDE,covered paid amount,10,0,0.0
+PDE,beneficiary paid amount,10,0,0.0
+PDE,payment,10,1,0.1
+PDE,insurance/coverage,10,10,1.0

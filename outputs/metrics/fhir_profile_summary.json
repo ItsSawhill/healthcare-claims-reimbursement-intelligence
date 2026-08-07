@@ -1,0 +1,33 @@
+{
+  "claim_line_count": 14,
+  "coverage_resource_count": 4,
+  "diagnosis_count": 3,
+  "eob_resource_count": 12,
+  "eob_types": {
+    "CARRIER": 1,
+    "OUTPATIENT": 1,
+    "PDE": 10
+  },
+  "patient_resource_count": 1,
+  "percentage_eobs_with_financial_data": 1.0,
+  "percentage_eobs_with_provider_reference": 1.0,
+  "percentage_items_with_hcpcs": 0.2857142857142857,
+  "service_date_max": "2024-04-03",
+  "service_date_min": "2015-06-01",
+  "unique_service_codes": [
+    "00378395277",
+    "16252060144",
+    "55111012290",
+    "57237001930",
+    "59762154003",
+    "60505257908",
+    "60505257909",
+    "67877022305",
+    "68180047903",
+    "71046",
+    "80053",
+    "93000",
+    "99213"
+  ],
+  "unknown_adjudication_code_count": 1
+}

@@ -1,0 +1,13 @@
+eob_id,patient_id,claim_type_code,cost_basis_name,cost_basis_amount,claim_type_percentile,overall_percentile_if_comparable,high_cost_flag
+outpatient--local-synthetic-0001,-20140000010000,OUTPATIENT,covered_paid_amount,118.0,1.0,1.0,true
+pde--1248370396,-20140000010000,PDE,part_d_total_drug_cost,0.0,0.3,0.3,false
+pde--1597912769,-20140000010000,PDE,part_d_total_drug_cost,0.0,0.3,0.3,false
+pde--1010252550,-20140000010000,PDE,part_d_total_drug_cost,0.0,0.3,0.3,false
+pde--1046286310,-20140000010000,PDE,part_d_total_drug_cost,10.0,0.6,0.6,false
+pde--1491241055,-20140000010000,PDE,part_d_total_drug_cost,10.0,0.6,0.6,false
+pde--1723334608,-20140000010000,PDE,part_d_total_drug_cost,10.0,0.6,0.6,false
+pde--1065188274,-20140000010000,PDE,part_d_total_drug_cost,20.0,0.8,0.8,false
+pde--1563826837,-20140000010000,PDE,part_d_total_drug_cost,20.0,0.8,0.8,false
+pde--1439717659,-20140000010000,PDE,part_d_total_drug_cost,40.0,0.9,0.9,false
+pde--1652397328,-20140000010000,PDE,part_d_total_drug_cost,100.0,1.0,1.0,true
+carrier--local-synthetic-0001,-20140000010000,CARRIER,provider_paid_amount,112.0,1.0,1.0,true
