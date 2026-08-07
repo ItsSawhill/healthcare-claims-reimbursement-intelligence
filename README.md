@@ -305,11 +305,6 @@ healthcare-claims-reimbursement-intelligence/
 └── tests/
 ```
 
-## Resume Bullets
-
-- Built an end-to-end healthcare reimbursement analytics platform using Python, SQL, Streamlit, and statistical modeling across 20K synthetic claims enriched with optional CMS Medicare benchmark data.
-- Developed provider risk scoring, PMPM analytics, reimbursement benchmarking, anomaly detection, and financial impact simulation for healthcare cost and utilization analysis.
-- Created executive-ready dashboards, forecasts, SQL reporting pipelines, and reimbursement scenario simulations to support payer/provider decision-making.
 
 ## Future Improvements
 
